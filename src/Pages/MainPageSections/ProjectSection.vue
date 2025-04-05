@@ -19,12 +19,28 @@
       <v-col
         cols="12"
         class="d-flex justify-center"
-        :class="{ 'my-6': $vuetify.display.xs, 'my-16': $vuetify.display.smAndUp }"
+        :class="{
+          'my-6': $vuetify.display.xs,
+          'my-16': $vuetify.display.smAndUp,
+        }"
       >
         <v-row
           class="projects-wrapper"
           justify="center"
         >
+          <v-col
+            v-for="n in 4"
+            :key="n"
+            cols="3"
+            v-if="isLoading"
+          >
+            <v-skeleton-loader
+              type="image"
+              loading-text="Loading Projects"
+              theme="dark"
+              class="skeleton-loader"
+            />
+          </v-col>
           <v-col
             v-for="(project, index) in projects"
             :key="index"
@@ -46,10 +62,10 @@
 </template>
 
 <script>
-import SectionHeader from '@/components/SectionHeader.vue';
-import ProjectItem from '@/components/ProjectItem.vue';
-import { gsap } from 'gsap';
-import { fetchProjects } from '@/utils/fetchData';
+import SectionHeader from "@/components/SectionHeader.vue";
+import ProjectItem from "@/components/ProjectItem.vue";
+import { gsap } from "gsap";
+import { fetchProjects } from "@/utils/fetchData";
 
 export default {
   components: {
@@ -58,58 +74,8 @@ export default {
   },
   data() {
     return {
-      projects: [
-        {
-          icon: '95star.png',
-          iconSize: '30px',
-          name: 'The 95 Stars - Pick & Drop Service',
-          atCompany: 'Contributor',
-          description:
-            'The 95 Star is a web application for pick and drop services. Customers can make reservations, while the admin has the ability to manage reservations, discount codes, cars, surges, static pages, and configure home page messages.',
-          responsibilites:
-            'I made contributions to the project by working on change requests for clients.  In addition to addressing client requirements, I focused on ensuring application security by creating robust APIs and implementing appropriate security measures.',
-          duration: 'September 2022 - Febuary 2023',
-          image: 'the95Star.png',
-          projectLink: 'https://www.the95star.com',
-          pictures: [
-            'the95Star.png',
-            '95Star1.png',
-            '95Star2.png',
-            '95Star3.png',
-          ],
-          active: false,
-        },
-        {
-          name: 'Bookee - Web based Book Management Application',
-          atCompany: 'Creator',
-          description:
-            'The app features a user community where users can follow each other and stay updated on reading activities. Users can maintain a status for each book, indicating whether they have read it, are currently reading it, or are interested in reading it.',
-          responsibilites:
-            'Through my expertise in web technologies, I successfully integrated frontend functionality with backend APIs, ensuring seamless communication and a smooth user experience. ',
-          duration: 'September 2022 - December 2022',
-          image: 'Bookee-Home.png',
-          githubLink:
-            'https://github.com/mJawadHaider/DSA-project-Bookee',
-          pictures: ['Bookee-Home.png', 'Bookee2.png'],
-          active: false,
-        },
-        {
-          icon: 'budgetManager.png',
-          iconSize: '22px',
-          name: 'Budget Manager',
-          atCompany: 'Contributor',
-          description:
-            'Budget Manager is a web app for construction companies, streamlining budget management, project funding, and e-invoice generation for customers.',
-          responsibilites:
-            'As a frontend developer, I was responsible for developing the complete frontend of the application using Vuetify and Vue.js. I utilized the power of these frameworks to create a visually appealing and user-friendly interface for seamless user interactions.',
-          duration: 'April 2022 - September 2022',
-          image: 'BM.png',
-          githubLink:
-            'https://github.com/isajjadali/budget-manager-v3',
-          pictures: ['BM.png', 'BM1.png', 'BM2.png'],
-          active: false,
-        },
-      ],
+      isLoading: false,
+      projects: [],
       fetchProjects,
     };
   },
@@ -118,14 +84,14 @@ export default {
     toggleProjectDetailsDialog(project) {
       project.active = !project.active;
       if (project.active) {
-        document.body.classList.add('card');
+        document.body.classList.add("card");
       } else {
-        document.body.classList.remove('card');
-        document.body.classList.remove('hover');
+        document.body.classList.remove("card");
+        document.body.classList.remove("hover");
       }
     },
     addAnimationToProjectCards() {
-      const cards = gsap.utils.toArray('.project-item');
+      const cards = gsap.utils.toArray(".project-item");
       let currentRow = 0;
       cards.forEach((card, index) => {
         gsap.fromTo(
@@ -140,24 +106,25 @@ export default {
             delay: currentRow * 0.5,
             x: 0,
             duration: 0.7,
-            ease: 'power1.out',
-          },
+            ease: "power1.out",
+          }
         );
         if (index % 3 === 2) currentRow++;
-      })
+      });
     },
   },
   async mounted() {
+    this.isLoading = true;
     const options = {
-      rootMargin: '0px',
+      rootMargin: "0px",
       threshold: 0.5,
     };
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('visible-div');
+          entry.target.classList.add("visible-div");
         } else {
-          entry.target.classList.remove('visible-div');
+          entry.target.classList.remove("visible-div");
         }
       });
     }, options);
@@ -165,6 +132,7 @@ export default {
     observer.observe(this.$refs.projectAnimation);
     this.addAnimationToProjectCards();
     this.projects = await this.fetchProjects();
+    this.isLoading = false;
   },
 };
 </script>
@@ -202,7 +170,7 @@ export default {
 }
 
 .project-item {
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: "Roboto Condensed", sans-serif;
   background-color: #ffffff40;
   border-radius: 12px;
   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
@@ -217,6 +185,12 @@ export default {
 }
 
 .project-item:hover .overlay-content {
-  height: 100%
+  height: 100%;
+}
+
+.skeleton-loader {
+  .v-skeleton-loader__bone {
+    border-radius: 10px;
+  }
 }
 </style>

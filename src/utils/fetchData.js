@@ -176,28 +176,64 @@ async function fetchProjects() {
     const text = await response.text();
     const res = JSON.parse(text.substr(47).slice(0, -2));
     const projects = [];
-    res.table.rows.forEach((item, index) => {
-      projects.push({
-        name: item.c["0"].v,
-        description: item.c["1"].v,
-        responsibilites: item.c["2"].v,
-        projectLink: item.c["3"]?.v || "",
-        githubLink: item.c["4"]?.v || "",
-        techStack: (item.c["5"].v || "").split(","),
-        duration: item.c["6"].v,
-        icon: item.c["7"]?.v || "",
-        iconSize: `${item.c["8"]?.v || "30"}px`,
 
-        // First picture will always be MAIN and other will be carousels
-        pictures: [
-          item.c["9"]?.v || "-",
-          item.c["10"]?.v || "-",
-          item.c["11"]?.v || "-",
-          item.c["12"]?.v || "-",
-        ].filter((pic) => pic !== "-"),
-      });
+    const rowTitles = [
+      { title: "name" },
+      { title: "associatedWith", default: "" },
+      { title: "description" },
+      { title: "responsibilities" },
+      { title: "projectLink" },
+      { title: "githubLink" },
+      { title: "techStack", getValue: (item, i) => item.c[i]?.v.split(",") },
+      { title: "duration" },
+      { title: "icon", default: "" },
+      {
+        title: "iconSize",
+        getValue: (item, i) => (item.c[i]?.v ? `${item.c[i]?.v}px` : ""),
+      },
+      {
+        title: "pictures",
+        getValue: (item, i) => {
+          return [
+            item.c[i]?.v,
+            item.c[i + 1]?.v,
+            item.c[i + 2]?.v,
+            item.c[i + 3]?.v,
+          ].filter((i) => i);
+        },
+      },
+    ];
+
+    res.table.rows.forEach((item, index) => {
+      const project = rowTitles.reduce((acc, row, i) => {
+        acc[row.title] = row.getValue
+          ? row.getValue(item, i)
+          : item.c[i]?.v ?? row.default ?? "-";
+        return acc;
+      }, {});
+
+      projects.push(project);
     });
     return projects;
+  } catch (err) {
+    console.error(err);
+    return defaultProjects;
+  }
+}
+async function fetchDetails() {
+  const sheetName = "Portfolio_Details";
+  const query = encodeURIComponent("Select *");
+  const url = `${base}sheet=${sheetName}&tq=${query}`;
+
+  try {
+    const response = await fetch(url);
+    const text = await response.text();
+    const res = JSON.parse(text.substr(47).slice(0, -2));
+    const details = {};
+    res.table.rows.forEach((item) => {
+      details.resumeLink = item.c[1]?.v;
+    });
+    return details;
   } catch (err) {
     console.error(err);
     return defaultProjects;
@@ -209,4 +245,5 @@ module.exports = {
   fetchEducation,
   fetchSkills,
   fetchProjects,
+  fetchDetails,
 };

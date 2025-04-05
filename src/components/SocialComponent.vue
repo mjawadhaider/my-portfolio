@@ -62,7 +62,7 @@ export default {
         {
           icon: 'mdi-github',
           tooltipText: 'Github',
-          link: 'https://github.com/mJawadHaider',
+          link: 'https://github.com/mjawadhaider',
           background: 'grey',
           iconColor: '#181616',
         },

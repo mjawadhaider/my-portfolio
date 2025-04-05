@@ -22,6 +22,7 @@
     sm="12"
     class="py-0 d-flex align-center justify-center"
     style="max-height: 52px"
+    v-bind="separatorProps"
   >
     <hr
       style="width: 275px; background-color: white; border: none; height: 1.3px;"
@@ -75,6 +76,10 @@ export default {
     titleStyling: {
       type: String,
       default: () => '',
+    },
+    separatorProps: {
+      type: Object,
+      default: () => { },
     },
   },
 };

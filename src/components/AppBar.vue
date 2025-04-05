@@ -11,44 +11,27 @@
       location="right"
       width="500"
     >
-      <div
-        style="color: white;"
-        class="mr-6 py-4 d-flex justify-end"
-      >
+      <div style="color: white" class="mr-6 py-4 d-flex justify-end">
         <v-btn
           variant="tonal"
           size="x-large"
           icon
           @click.stop="toggleNavigationDrawer"
         >
-          <v-icon
-            size="x-large"
-            color="white"
-            icon="mdi-close"
-          />
+          <v-icon size="x-large" color="white" icon="mdi-close" />
         </v-btn>
       </div>
-      <div
-        style="width: 100%; margin: 83px 16px 24px;"
-        class="px-3"
-      >
+      <div style="width: 100%; margin: 83px 16px 24px" class="px-3">
         <span
-          style="color: gray; font-size: 13px; margin-bottom: 10px;"
+          style="color: gray; font-size: 13px; margin-bottom: 10px"
           class="upper-case"
         >
           Navigation
         </span>
         <div class="stripe" />
       </div>
-      <v-list
-        v-if="showNavigationList"
-        class="px-5"
-        nav
-      >
-        <div
-          v-for="(tab, index) in tabs"
-          :key="index"
-        >
+      <v-list v-if="showNavigationList" class="px-5" nav>
+        <div v-for="(tab, index) in tabs" :key="index">
           <v-list-item
             :title="tab.title"
             :active="tab.isActive"
@@ -58,30 +41,25 @@
             @click="scrollToSection(tab, index)"
           >
             <template v-slot:append>
-              <div
-                class="dot"
-                v-if="tab.isActive"
-              ></div>
+              <div class="dot" v-if="tab.isActive"></div>
             </template>
           </v-list-item>
         </div>
       </v-list>
       <div
         :style="$vuetify.display.xs ? { height: '34%' } : { height: '38%' }"
-        style="align-content: space-between;"
+        style="align-content: space-between"
         class="d-flex flex-column justify-end mx-7 mb-12"
       >
-        <div
-          class="stripe mb-5"
-          style="width: 100%;"
-        />
+        <div class="stripe mb-5" style="width: 100%" />
         <span class="text-gray my-5">SOCIALS</span>
         <div
           v-if="showNavigationList"
-          style="animation: slideInRight 0.5s ease-in forwards;"
+          style="animation: slideInRight 0.5s ease-in forwards"
         >
           <social-component
-            :iconSize="$vuetify.display.xs ? 'default' : 'x-large'" />
+            :iconSize="$vuetify.display.xs ? 'default' : 'x-large'"
+          />
         </div>
       </div>
     </v-navigation-drawer>
@@ -89,7 +67,6 @@
       id="appBar"
       class="pt-2 px-6 font-18 app-bar"
       app
-      rounded="xl"
       scroll-behavior="hide"
       scroll-threshold="191"
       :color="'#353535' || '#ffffff17' || primaryBackground"
@@ -98,25 +75,23 @@
     >
       <div
         class="app-bar-title magnetic-button"
-        style="height: 100%;"
-        :style="$vuetify.display.smAndDown ? 'width: 50%; padding: 0' : 'width: 18%'"
+        style="height: 100%"
+        :style="
+          $vuetify.display.smAndDown ? 'width: 50%; padding: 0' : 'width: 18%'
+        "
         @mousemove="handleMouseMove(-1)"
         @mouseleave="handleMouseLeave(-1)"
         @mouseenter="handleMouseEnter"
         @click="refreshPage"
       >
-        <v-icon
-          icon="mdi-copyright"
-          class="pt-0 mr-1"
-          size="small"
-        />
+        <v-icon icon="mdi-copyright" class="pt-0 mr-1" size="small" />
         <p id="appbar-title-text">
           {{ appBarTitle }}
         </p>
       </div>
       <div
         v-if="$vuetify.display.smAndDown"
-        style="display: flex; justify-content: end; width: 50%;"
+        style="display: flex; justify-content: end; width: 50%"
       >
         <v-app-bar-nav-icon
           :color="gray"
@@ -126,14 +101,10 @@
           width="85"
           height="40"
           :border="0"
-          style="border-radius: 7px;"
+          style="border-radius: 7px"
           @click.stop="toggleNavigationDrawer"
         >
-          <v-icon
-            icon="mdi-checkbox-blank-circle"
-            size="7"
-            class="mr-2"
-          /> menu
+          <v-icon icon="mdi-checkbox-blank-circle" size="7" class="mr-2" /> menu
         </v-app-bar-nav-icon>
       </div>
 
@@ -146,7 +117,7 @@
           :key="index"
           class="px-2 magnetic-button"
           :class="{ 'button-selected': tab.isActive }"
-          style="border-radius: 5px; transition: transform 0.2s;"
+          style="border-radius: 5px; transition: transform 0.2s"
           @mousemove="handleMouseMove(index)"
           @mouseleave="handleMouseLeave(index)"
           @click="scrollToSection(tab)"
@@ -159,10 +130,7 @@
           >
             Contact Me
           </v-btn>
-          <p
-            v-else
-            class="button-text"
-          >
+          <p v-else class="button-text">
             {{ tab.title }}
           </p>
         </div>
@@ -172,7 +140,7 @@
 </template>
 
 <script>
-import SocialComponent from './SocialComponent.vue';
+import SocialComponent from "./SocialComponent.vue";
 import { gsap } from "gsap";
 import TextPlugin from "gsap/TextPlugin";
 
@@ -193,13 +161,13 @@ export default {
     return {
       toggle: false,
       activeIndex: -1,
-      appBarTitle: 'Code by Jawad',
+      appBarTitle: "Code by Jawad",
       showNavigationList: false,
     };
   },
   watch: {
     toggle(newValue) {
-      this.$emit('toggleNavigationDrawer', newValue);
+      this.$emit("toggleNavigationDrawer", newValue);
     },
   },
   computed: {
@@ -207,7 +175,7 @@ export default {
       get() {
         return this.tabs.findIndex((tab) => tab.isActive);
       },
-      set() { },
+      set() {},
     },
   },
   methods: {
@@ -218,13 +186,12 @@ export default {
     scrollToSection(btn) {
       this.toggle = false;
       this.showNavigationList = false;
-      const component = document.getElementById(
-        btn?.componentId || 'appBarId'
-      );
-      const scrollPosition = component.getBoundingClientRect().top + window.scrollY - 35;
+      const component = document.getElementById(btn?.componentId || "appBarId");
+      const scrollPosition =
+        component.getBoundingClientRect().top + window.scrollY - 35;
       window.scrollTo({
         top: scrollPosition,
-        behavior: 'smooth',
+        behavior: "smooth",
       });
     },
     handleMouseMove() {
@@ -240,31 +207,33 @@ export default {
       const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
       if (distance < 500) {
-        event.target.style.transform = `translate(${deltaX / 10}px, ${deltaY / 10}px)`;
+        event.target.style.transform = `translate(${deltaX / 10}px, ${
+          deltaY / 10
+        }px)`;
       } else {
-        event.target.style.transform = 'translate(0, 0)';
+        event.target.style.transform = "translate(0, 0)";
       }
     },
     handleMouseLeave() {
       const button = event.target;
 
-      button.style.animation = 'bounceBack 0.5s ease';
+      button.style.animation = "bounceBack 0.5s ease";
       setTimeout(() => {
-        button.style.animation = '';
-        button.style.transform = 'translate(0, 0)';
+        button.style.animation = "";
+        button.style.transform = "translate(0, 0)";
       }, 500);
 
-      gsap.to('#appbar-title-text', {
+      gsap.to("#appbar-title-text", {
         duration: 0.5,
-        text: 'Code by Jawad',
+        text: "Code by Jawad",
         ease: "none",
         delay: 0,
       });
     },
     handleMouseEnter() {
-      gsap.to('#appbar-title-text', {
+      gsap.to("#appbar-title-text", {
         duration: 0.5,
-        text: 'JAWAD HAIDER',
+        text: "JAWAD HAIDER",
         ease: "none",
         delay: 0,
       });
@@ -274,11 +243,11 @@ export default {
     },
   },
   mounted() {
-    const appbarElement = document.getElementById('appBar');
-    appbarElement.style.opacity = '0';
+    const appbarElement = document.getElementById("appBar");
+    appbarElement.style.opacity = "0";
 
     const appBarTitleEl = gsap.fromTo(
-      '.app-bar-title',
+      ".app-bar-title",
       {
         opacity: 0,
         y: 40,
@@ -289,14 +258,13 @@ export default {
         opacity: 1,
         paused: true,
         delay: 2.2,
-        ease: 'bounce.out',
+        ease: "bounce.out",
       }
-    )
-
+    );
 
     setTimeout(() => {
-      appbarElement.style.animation = 'bounceIn 1.8s';
-      appbarElement.style.opacity = '1';
+      appbarElement.style.animation = "bounceIn 1.8s";
+      appbarElement.style.opacity = "1";
       appBarTitleEl.play();
     }, 2000);
   },
@@ -310,6 +278,7 @@ export default {
   left: 7% !important;
   // position: sticky !important;
   box-shadow: 0 2px 40px #0003 !important;
+  border-radius: 20px !important;
 }
 
 .app-bar-title {
@@ -320,7 +289,7 @@ export default {
   padding-left: 1.7rem;
 
   p {
-    font-weight: bold
+    font-weight: bold;
   }
 }
 
@@ -333,7 +302,6 @@ export default {
 }
 
 .navigation-list {
-
   animation: slideInRight 0.5s ease-in forwards;
 
   .v-list-item__content {
@@ -398,7 +366,7 @@ export default {
   background: linear-gradient(to left, #ec7e1e, #ec7e1e) !important;
 }
 
-.contactme-btn>.v-btn__content {
+.contactme-btn > .v-btn__content {
   color: black;
   font-weight: bold;
 }
@@ -417,7 +385,6 @@ export default {
 }
 
 @keyframes bounceBack {
-
   0%,
   20%,
   50%,

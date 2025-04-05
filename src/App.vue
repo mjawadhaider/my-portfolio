@@ -166,11 +166,11 @@ $mywhite: #EEEEEE;
 }
 
 .text-mysecondary {
-  color: $secondary;
+  color: $secondary !important;
 }
 
 .text-mywhite {
-  color: $mywhite;
+  color: $mywhite !important;
 }
 
 .main-container {

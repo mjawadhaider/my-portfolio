@@ -1,8 +1,5 @@
 <template>
-  <v-row
-    :style="informationSection"
-    justify="center"
-  >
+  <v-row :style="informationSection" justify="center">
     <v-col
       cols="12"
       md="7"
@@ -21,37 +18,28 @@
       <span class="about text-mysecondary"></span>
       <!-- <span class="email"> jhaider869@gmail.com </span> -->
 
-
       <button
-        class="resume-btn d-flex justify-center align-center "
+        class="resume-btn d-flex justify-center align-center"
         :style="showBtnText ? { width: '170px' } : { padding: '7px' }"
         @mouseenter="() => changeShowBtnTextValue(true)"
         @mouseleave="() => changeShowBtnTextValue(false)"
         @mousemove="handleMouseMove_Small"
-        @click="
-          routeToLink(
-            'https://drive.google.com/file/d/1bYa9GKe-I1iEGI4IBgFlz0CGq30oH1EP/view?usp=sharing'
-          )
-          "
+        @click="routeToLink(details.resumeLink)"
       >
         <img
           :src="require('@/assets/svg-icons/new-tab.svg')"
           alt="open"
           style="width: 36px; margin-top: 5px"
-        >
-        <span
-          id="resume-btn-text"
-          style="opacity: 0;"
-        >
-          {{ showBtnText ? 'Download Resume' : '' }}
+        />
+        <span id="resume-btn-text" style="opacity: 0">
+          {{ showBtnText ? "Download Resume" : "" }}
         </span>
       </button>
 
       <div class="social-container">
-        <span
-          class="text-mysecondary"
-          style="font-size: 18px;"
-        >Find Me Online:</span>
+        <span class="text-mysecondary" style="font-size: 18px"
+          >Find Me Online:</span
+        >
         <div>
           <social-component icon-size="default" />
         </div>
@@ -82,58 +70,48 @@
         <v-img
           class="picture"
           style="height: auto; z-index: 0"
-          :src="require('@/assets/avatar-colored.png')"
+          :src="require('@/assets/my.png')"
         ></v-img>
-      </div>
-      <div
-        v-if="$vuetify.display.lg"
-        class="my-icons"
-      >
-        <div
+        <v-img
           id="git"
-          class="my-icon git"
-        >
-          <v-img :src="require('@/assets/svg-icons/git.svg')" />
-        </div>
-        <div
+          class="floating-icon git"
+          :src="require('@/assets/svg-icons/git.svg')"
+        />
+        <v-img
           id="js"
-          class="my-icon js"
-        >
-          <v-img :src="require('@/assets/svg-icons/js.svg')" />
-        </div>
-        <div
+          class="floating-icon js"
+          :src="require('@/assets/svg-icons/js.svg')"
+        />
+        <v-img
           id="vue"
-          class="my-icon vue"
-        >
-          <v-img :src="require('@/assets/svg-icons/vue.svg')" />
-        </div>
-        <div
+          class="floating-icon vue"
+          :src="require('@/assets/svg-icons/vue.svg')"
+        />
+        <v-img
           id="nodejs"
-          class="my-icon nodejs"
-        >
-          <v-img :src="require('@/assets/svg-icons/nodejs.svg')" />
-        </div>
-        <div
+          class="floating-icon nodejs"
+          :src="require('@/assets/svg-icons/nodejs.svg')"
+        />
+        <v-img
           id="dotnet"
-          class="my-icon dotnet"
-        >
-          <v-img :src="require('@/assets/svg-icons/dotnet.svg')" />
-        </div>
-        <div
+          class="floating-icon dotnet"
+          :src="require('@/assets/svg-icons/dotnet.svg')"
+        />
+        <v-img
           id="react"
-          class="my-icon react"
-        >
-          <v-img :src="require('@/assets/svg-icons/react.svg')" />
-        </div>
+          class="floating-icon react"
+          :src="require('@/assets/svg-icons/react.svg')"
+        />
       </div>
     </v-col>
   </v-row>
 </template>
 
 <script>
-import { gsap } from 'gsap';
-import TextPlugin from 'gsap/TextPlugin';
-import SocialComponent from '@/components/SocialComponent.vue';
+import { gsap } from "gsap";
+import TextPlugin from "gsap/TextPlugin";
+import SocialComponent from "@/components/SocialComponent.vue";
+import { fetchDetails } from "@/utils/fetchData";
 
 gsap.registerPlugin(TextPlugin);
 
@@ -141,6 +119,8 @@ export default {
   data() {
     return {
       showBtnText: false,
+      fetchDetails,
+      details: {},
     };
   },
   components: {
@@ -149,7 +129,7 @@ export default {
   methods: {
     changeShowBtnTextValue(value) {
       this.showBtnText = value;
-      const textEl = document.getElementById('resume-btn-text');
+      const textEl = document.getElementById("resume-btn-text");
       textEl.style.opacity = +this.showBtnText;
       this.handleMouseLeave();
     },
@@ -157,18 +137,19 @@ export default {
   computed: {
     informationSection() {
       const commonStyling = {
-        'max-width': '100vw',
-        height: 'calc(100vh - 80px)',
+        "max-width": "100vw",
+        height: "calc(100vh - 80px)",
       };
-      if (this.$vuetify.display.sm) return { ...commonStyling, 'padding-inline': '90px', height: 'auto' }
-      else if (this.$vuetify.display.xs) return { ...commonStyling, 'padding-inline': '50px', height: 'auto' }
-      else return { ...commonStyling, 'padding-inline': '250px' }
-
+      if (this.$vuetify.display.sm)
+        return { ...commonStyling, "padding-inline": "90px", height: "auto" };
+      else if (this.$vuetify.display.xs)
+        return { ...commonStyling, "padding-inline": "50px", height: "auto" };
+      else return { ...commonStyling, "padding-inline": "250px" };
     },
   },
-  mounted() {
+  async mounted() {
     const profilePic = gsap.fromTo(
-      '#picture-container',
+      "#picture-container",
       {
         y: 30,
         opacity: 0,
@@ -179,8 +160,8 @@ export default {
         duration: 2,
         scale: 1,
         opacity: 1,
-        delay: 2.5,
-        ease: 'back.inOut',
+        delay: 1,
+        ease: "back.inOut",
       }
     );
 
@@ -192,35 +173,36 @@ export default {
         opacity: 1,
         duration: 1,
         text: text,
-        ease: 'none',
+        ease: "none",
         delay: 1,
         paused: true,
         ...args,
       }),
     };
     const desc =
-      'Welcome to my portfolio! I am a skilled software engineer experienced in frontend and backend technologies. With a strong foundation in computer science, I create exceptional user experiences through clean and efficient code. Browse through my projects to see my expertise. Let\'s connect and Thank you for visiting!';
-
+      "Welcome to my portfolio! I am a skilled software engineer experienced in frontend and backend technologies. With a strong foundation in computer science, I create exceptional user experiences through clean and efficient code. Browse through my projects to see my expertise. Let's connect and Thank you for visiting!";
 
     const socialBtns = gsap.fromTo(
-      '.social-container', {
-      opacity: 0,
-      scale: 0,
-    }, {
-      opacity: 1,
-      scale: 1,
-      ease: 'back.inOut',
-      duration: 1,
-      paused: true,
-    }
+      ".social-container",
+      {
+        opacity: 0,
+        scale: 0,
+      },
+      {
+        opacity: 1,
+        scale: 1,
+        ease: "back.inOut",
+        duration: 1,
+        paused: true,
+      }
     );
 
     const resumeBtn = gsap.fromTo(
-      '.resume-btn',
+      ".resume-btn",
       { opacity: 0 },
       {
         opacity: 1,
-        ease: 'sine.inOut',
+        ease: "sine.inOut",
         paused: true,
         onComplete: () => {
           socialBtns.play();
@@ -228,48 +210,48 @@ export default {
       }
     );
     const about = gsap.fromTo(
-      '.about',
+      ".about",
       fromToTextConfig.from,
-      fromToTextConfig.to('Software Engineer | Junior at UET', {
-        delay: 1,
+      fromToTextConfig.to("Software Engineer | Junior at UET", {
+        delay: 1.3,
+        paused: true,
         onComplete: () => {
           resumeBtn.play();
         },
       })
     );
     const name = gsap.fromTo(
-      '.name',
+      ".name",
       fromToTextConfig.from,
-      fromToTextConfig.to('Muhammad Jawad Haider', {
-        delay: 0,
-        onComplete: () => {
-          about.play();
-        },
+      fromToTextConfig.to("Muhammad Jawad Haider", {
+        delay: 1.3,
+        paused: true,
       })
     );
 
     const HiThere = gsap.fromTo(
-      '.greetings',
+      ".greetings",
       {
         x: -1000,
       },
       {
-        duration: 2,
+        duration: 1.5,
         x: 0,
-        delay: 1,
-        ease: 'elastic.out',
+        ease: "elastic.out",
         paused: true,
         onComplete: () => {
           name.play();
+          about.play();
         },
       }
     );
 
     HiThere.play();
     profilePic.play();
+    name.play();
+    about.play();
 
-
-    const icons = gsap.utils.toArray('.my-icon');
+    const icons = gsap.utils.toArray(".floating-icon");
 
     icons.forEach((icon, index) => {
       gsap.fromTo(
@@ -283,18 +265,19 @@ export default {
           scale: 1,
           opacity: 1,
           repeat: -1,
-          delay: 7 + (index / 2),
+          delay: 3 + index / 2,
           yoyo: true,
           duration: 3,
-          ease: 'circ.inOut',
-        },
-      )
+          ease: "circ.inOut",
+        }
+      );
     });
+    this.details = await fetchDetails();
   },
 };
 </script>
 
-<style>
+<style lang="scss">
 .left-pane {
   display: flex;
   flex-direction: column;
@@ -303,11 +286,42 @@ export default {
 }
 
 .picture-box {
-  height: 46vh;
+  height: 48vh;
   display: flex;
   justify-content: center;
   margin-top: 60px;
   margin-right: 22px;
+  position: relative;
+
+  .floating-icon {
+    position: absolute;
+    width: 10%;
+    height: auto;
+  }
+  .git {
+    top: -12%;
+    right: 34%;
+  }
+  .js {
+    top: 2%;
+    left: 2%;
+  }
+  .vue {
+    top: 24%;
+    right: -9%;
+  }
+  .nodejs {
+    bottom: -12%;
+    left: 34%;
+  }
+  .dotnet {
+    bottom: 14%;
+    right: -6%;
+  }
+  .react {
+    bottom: 34%;
+    left: -13%;
+  }
 }
 
 .about,
@@ -341,48 +355,6 @@ export default {
   color: #2d2c2c;
   font-weight: bold;
 }
-
-.my-icons {
-  width: 0;
-
-  .my-icon {
-    height: 33px;
-    width: 33px;
-    position: relative;
-  }
-
-  .git {
-    left: -170px;
-    top: 15px;
-  }
-
-  .js {
-    left: -354px;
-    top: 55px;
-  }
-
-  .vue {
-    top: 70px;
-    right: 23px;
-  }
-
-  .nodejs {
-    right: 260px;
-    top: 275px;
-    width: 50px;
-  }
-
-  .dotnet {
-    right: 40px;
-    top: 165px;
-  }
-
-  .react {
-    right: 385px;
-    top: 66px;
-  }
-}
-
 
 .resume-btn {
   border-radius: 22px;
