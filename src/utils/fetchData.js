@@ -199,7 +199,7 @@ async function fetchProjects() {
             item.c[i + 1]?.v,
             item.c[i + 2]?.v,
             item.c[i + 3]?.v,
-          ].filter((i) => i);
+          ].filter((i) => i !== '-');
         },
       },
     ];

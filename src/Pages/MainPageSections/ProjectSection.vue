@@ -31,7 +31,8 @@
           <v-col
             v-for="n in 4"
             :key="n"
-            cols="3"
+            cols="12"
+            md="3"
             v-if="isLoading"
           >
             <v-skeleton-loader
@@ -117,7 +118,7 @@ export default {
     this.isLoading = true;
     const options = {
       rootMargin: "0px",
-      threshold: 0.5,
+      threshold: this.$vuetify.display.xs ? 0.2 : 0.3,
     };
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -172,7 +173,7 @@ export default {
 .project-item {
   font-family: "Roboto Condensed", sans-serif;
   background-color: #ffffff40;
-  border-radius: 12px;
+  border-radius: 8px;
   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
   box-shadow: 5px 5px 15px #353535;
 
@@ -190,7 +191,7 @@ export default {
 
 .skeleton-loader {
   .v-skeleton-loader__bone {
-    border-radius: 10px;
+    border-radius: 8px;
   }
 }
 </style>

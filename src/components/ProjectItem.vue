@@ -1,13 +1,16 @@
 <template>
   <div class="main-content">
     <v-img
-      style="border-radius: 12px"
       :src="handleImageFailure(project.pictures[0])"
       :lazy-src="handleImageFailure(project.pictures[0])"
       @load="isImageLoading = false"
     >
       <template v-slot:placeholder>
-        <v-row class="fill-height ma-0" align="center" justify="center">
+        <v-row
+          class="fill-height ma-0"
+          align="center"
+          justify="center"
+        >
           <v-progress-circular
             indeterminate
             color="grey lighten-5"
@@ -19,7 +22,11 @@
   <div class="overlay-content">
     {{ project.name }}
   </div>
-  <v-dialog v-model="project.active" persistent class="project-dialog">
+  <v-dialog
+    v-model="project.active"
+    persistent
+    class="project-dialog"
+  >
     <v-card class="dialog-card">
       <div class="header">
         <div class="d-flex">
@@ -32,7 +39,10 @@
           </v-img>
           <div class="d-flex flex-column justify-center">
             <h3 class="mb-0">{{ project.name }}</h3>
-            <span v-if="project.associatedWith" class="text-caption">
+            <span
+              v-if="project.associatedWith"
+              class="text-caption"
+            >
               Associated with {{ project.associatedWith }}
             </span>
           </div>
@@ -52,9 +62,15 @@
           class="description"
           :class="{ 'w-100': $vuetify.display.smAndDown }"
         >
-          <div class="d-flex" style="justify-content: space-between">
+          <div
+            class="d-flex"
+            style="justify-content: space-between"
+          >
             <h3>Description:</h3>
-            <p v-if="$vuetify.display.smAndDown" class="duration">
+            <p
+              v-if="$vuetify.display.smAndDown"
+              class="duration"
+            >
               {{ project.duration }}
             </p>
           </div>
@@ -68,21 +84,27 @@
               v-if="project.projectLink"
               target="_blank"
               :href="project.projectLink"
-              >Project URL</a
-            >
-            <a v-else class="my-cursor-hover disabled" href="" @click.prevent
-              >Project URL (Not Available)</a
-            >
+            >Project URL</a>
+            <a
+              v-else
+              class="my-cursor-hover disabled"
+              href=""
+              @click.prevent
+            >Project
+              URL (Not Available)</a>
             <a
               class="my-cursor-hover"
               v-if="project.githubLink"
               target="_blank"
               :href="project.githubLink"
-              >Github Link</a
-            >
-            <a v-else class="my-cursor-hover disabled" href="" @click.prevent
-              >Github URL (Private Repo)</a
-            >
+            >Github Link</a>
+            <a
+              v-else
+              class="my-cursor-hover disabled"
+              href=""
+              @click.prevent
+            >Github
+              URL (Private Repo)</a>
           </div>
           <h3 class="mt-4">Technology Stack:</h3>
           <div class="tech-stack">
@@ -101,7 +123,10 @@
                   :src="require(`@/assets/svg-icons/${getTechIcon(icon)}`)"
                 />
               </template>
-              <span class="text-center" style="font-size: 12px">
+              <span
+                class="text-center"
+                style="font-size: 12px"
+              >
                 {{ getTechIconName(icon) }}
               </span>
             </v-tooltip>
@@ -111,7 +136,10 @@
           class="right-content"
           :class="{ 'w-100': $vuetify.display.smAndDown }"
         >
-          <p v-if="$vuetify.display.mdAndUp" class="duration">
+          <p
+            v-if="$vuetify.display.mdAndUp"
+            class="duration"
+          >
             {{ project.duration }}
           </p>
           <div class="images">
@@ -189,7 +217,7 @@ export default {
   props: {
     project: {
       type: Object,
-      default: () => {},
+      default: () => { },
     },
     index: {
       type: Number,
@@ -305,7 +333,7 @@ export default {
 
   .dialog-card {
     background-color: #353535;
-    border-radius: 16px !important;
+    border-radius: 12px !important;
   }
 
   .header {
@@ -411,6 +439,7 @@ export default {
   .content {
     flex-direction: column;
   }
+
   .description,
   .right-content {
     width: 100% !important;

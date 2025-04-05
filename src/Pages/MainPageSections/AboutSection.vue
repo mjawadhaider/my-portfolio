@@ -1,5 +1,8 @@
 <template>
-  <div ref="animatedElement" class="fading mt-3">
+  <div
+    ref="animatedElement"
+    class="fading mt-3"
+  >
     <v-row
       class="about-row"
       :class="$vuetify.display.smAndDown ? 'px-7' : 'px-12'"
@@ -11,11 +14,10 @@
         :titleColor="secondary"
         :iconColor="white"
         :lineStyling="{ width: '300px', background: white }"
-        :titleStyling="
-          $vuetify.display.smAndDown
+        :titleStyling="$vuetify.display.smAndDown
             ? 'mt-16 pb-0 text-uppercase'
             : 'mt-10 pb-0 text-uppercase'
-        "
+          "
         :separator-props="{
           class: 'mb-4',
         }"
@@ -29,11 +31,11 @@
         :class="{ 'mt-4': $vuetify.display.xs }"
         style="gap: 0.7rem"
       >
-        <div class="experience-wrapper my-card" variant="tonal">
-          <h1
-            :style="{ color: '#ebc29e', fontSize: '34px' }"
-
-          >
+        <div
+          class="experience-wrapper my-card"
+          variant="tonal"
+        >
+          <h1 :style="{ color: '#ebc29e', fontSize: '34px' }">
             Experience
           </h1>
           <div
@@ -52,9 +54,11 @@
               {{ item.company }}
             </p>
             <p class="education-item text-grey-darken-1">
-              <v-icon color="grey-darken-1" size="22" class="mr-1"
-                >mdi-calendar-blank</v-icon
-              >
+              <v-icon
+                color="grey-darken-1"
+                size="22"
+                class="mr-1"
+              >mdi-calendar-blank</v-icon>
               {{ item.duration }}
             </p>
             <div
@@ -69,11 +73,11 @@
             type="article"
           />
         </div>
-        <div class="education-wrapper my-card pb-6" variant="tonal">
-          <h1
-            :style="{ color: '#ebc29e', fontSize: '34px' }"
-
-          >
+        <div
+          class="education-wrapper my-card pb-6"
+          variant="tonal"
+        >
+          <h1 :style="{ color: '#ebc29e', fontSize: '34px' }">
             Education
           </h1>
           <div
@@ -88,13 +92,18 @@
               {{ item.degree }}
             </p>
             <p class="education-item">
-              <v-icon size="24" class="mr-1"> mdi-school </v-icon>
+              <v-icon
+                size="24"
+                class="mr-1"
+              > mdi-school </v-icon>
               {{ item.institute }}
             </p>
             <p class="education-item text-grey-darken-1">
-              <v-icon color="grey-darken-1" size="22" class="mr-1"
-                >mdi-calendar-blank</v-icon
-              >
+              <v-icon
+                color="grey-darken-1"
+                size="22"
+                class="mr-1"
+              >mdi-calendar-blank</v-icon>
               {{ item.duration }}
             </p>
             <div
@@ -111,11 +120,13 @@
         </div>
       </v-col>
       <!-- Skills -->
-      <v-col cols="12" md="5" sm="12" class="skills-wrapper my-card">
-        <h1
-          :style="{ color: '#ebc29e', fontSize: '34px' }"
-
-        >
+      <v-col
+        cols="12"
+        md="5"
+        sm="12"
+        class="skills-wrapper my-card"
+      >
+        <h1 :style="{ color: '#ebc29e', fontSize: '34px' }">
           Skills
         </h1>
         <v-row
@@ -124,7 +135,12 @@
           :key="index"
           class="d-flex align-center justify-center"
         >
-          <v-col cols="12" md="3" sm="12" class="py-0 pr-0">
+          <v-col
+            cols="12"
+            md="3"
+            sm="12"
+            class="py-0 pr-0"
+          >
             <p
               class="education-item mt-4"
               style="font-size: medium; font-weight: bold"
@@ -132,7 +148,12 @@
               {{ item.name }}
             </p>
           </v-col>
-          <v-col cols="10" md="9" sm="10" class="pa-0">
+          <v-col
+            cols="10"
+            md="9"
+            sm="10"
+            class="pa-0"
+          >
             <v-progress-linear
               v-model="item.skillPower"
               color="#ebc29e"
@@ -292,8 +313,12 @@ $lightGray: #bdbdbd;
   background-color: #616161;
   background-color: #ebc29e;
   height: 2px;
-  border-radius: 50%;
+  border-radius: 20%;
   width: 350px;
+
+  @media (max-width: 1100px) {
+    width: 100%;
+  }
 }
 
 .visible {
