@@ -32,7 +32,7 @@
           >
             <span class="text-white">
               <v-avatar
-                :image="require('@/assets/avatar-2.png')"
+                :image="require('@/assets/my.png')"
                 size="64"
                 class="mr-2"
               />
