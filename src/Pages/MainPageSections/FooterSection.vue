@@ -1,217 +1,59 @@
 <template>
-  <v-row
-    justify="center"
-    class="ma-0 footer-section text-gray"
-    :class="{ 'tab-view': $vuetify.display.sm }"
-    :style="$vuetify.display.mdAndUp
-      ? 'border-radius: 50px 50px 0 0;'
-      : 'border-radius: 30px 30px 0 0;'
-      "
-  >
-    <v-col
-      cols="12"
-      md="8"
-      sm="10"
-      :class="{ 'px-6': $vuetify.display.smAndDown }"
-    >
-      <div
-        ref="animatedDiv"
-        class="fading-col"
+  <section ref="root" class="contact">
+    <div class="contact__inner">
+      <p class="section-eyebrow">04 &mdash; Contact</p>
+
+      <button
+        type="button"
+        class="contact__cta my-cursor-hover"
+        @click="getInTouch"
       >
-        <v-row
-          id="footer-content"
-          class="d-flex"
-        >
-          <v-col
-            cols="11"
-            md="9"
-            sm="9"
-            class="d-flex flex-column"
-            :style="$vuetify.display.mdAndUp ? 'font-size: 60px;' : 'font-size: 45px'
-              "
+        <h2 class="contact__heading">
+          Let's build<br />something together
+        </h2>
+      </button>
+
+      <div class="contact__row">
+        <div v-show="!toggleFeedackForm" ref="methods" class="contact__methods">
+          <a
+            class="contact__method my-cursor-hover"
+            @mousemove="handleMouseMove_Small"
+            @mouseleave="handleMouseLeave"
+            @click="routeToLink('mailto:m.jawadhaider03@gmail.com')"
           >
-            <span class="text-white">
-              <v-avatar
-                :image="require('@/assets/my.png')"
-                size="64"
-                class="mr-2"
-              />
-              Let's work
-            </span>
-
-            <span class="text-white"> together </span>
-          </v-col>
-
-          <v-col
-            cols="1"
-            md="3"
-            sm="3"
-            class="d-flex"
-            :class="$vuetify.display.xs || $vuetify.display.mdAndUp
-              ? 'align-end pa-0 mb-10'
-              : 'align-center justify-end'
-              "
+            m.jawadhaider03@gmail.com
+          </a>
+          <button
+            type="button"
+            class="contact__method my-cursor-hover"
+            @mousemove="handleMouseMove_Small"
+            @mouseleave="handleMouseLeave"
+            @click="copyToCipboard('+92497537708')"
           >
-            <v-icon
-              color="white"
-              icon="mdi-arrow-bottom-left"
-            />
-          </v-col>
+            +92 49 7537708
+          </button>
+        </div>
 
-          <v-col
-            cols="12"
-            class="d-flex align-center pb-0"
-            style="flex: wrap"
-          >
-            <v-divider
-              color="white"
-              :length="$vuetify.display.xs ? 166 : 680"
-            />
-            <button
-              icon
-              size="150"
-              class="btn-get-in-touch custom-btn-hover"
-              :color="lightGray"
-              :style="$vuetify.display.smAndDown ? 'height: 160px; width: 230px' : ''
-                "
-              @click="getInTouch"
-              @mousemove="handleMouseMove"
-              @mouseleave="handleMouseLeave"
-            >
-              Connect with Us!
-            </button>
-            <v-divider
-              color="white"
-              :length="$vuetify.display.xs ? 40 : 140"
-            />
-          </v-col>
-
-          <v-col
-            cols="12"
-            id="contact-email-phone"
-            class="d-flex align-center"
-            :class="$vuetify.display.smAndDown ? 'pt-16' : 'py-0'"
-            :style="$vuetify.display.xs
-              ? { flexDirection: 'column' }
-              : { flexDirection: 'row' }
-              "
-          >
-            <v-btn
-              key="email"
-              variant="outlined"
-              color="white"
-              rounded
-              :height="$vuetify.display.xs ? 65 : 55"
-              width="300"
-              :block="$vuetify.display.xs"
-              class="custom-btn-hover email-button"
-              :style="`border: 1px solid ${gray}; border-radius: 100px`"
-              :class="$vuetify.display.xs ? 'mb-4' : 'mr-5'"
-              @click="routeToLink('mailto:jhaider869@gmail.com')"
-              @mousemove="handleMouseMove_Small"
-              @mouseleave="handleMouseLeave"
-            >
-              <v-icon
-                icon="mdi-email"
-                size="large"
-                class="mr-2"
-              />
-              jhaider869@gmail.com
-            </v-btn>
-
-            <v-btn
-              key="phone"
-              variant="outlined"
-              color="white"
-              rounded
-              :height="$vuetify.display.xs ? 65 : 55"
-              width="200"
-              :block="$vuetify.display.xs"
-              class="custom-btn-hover"
-              :style="`border: 1px solid ${gray}; border-radius: 100px`"
-              @click="copyToCipboard('+92362474916')"
-              @mousemove="handleMouseMove_Small"
-              @mouseleave="handleMouseLeave"
-            >
-              <v-icon
-                icon="mdi-phone"
-                size="large"
-                class="mr-2"
-              />
-              +92 36 2474916
-            </v-btn>
-          </v-col>
-
-          <v-col
-            cols="12"
-            id="animate-feedback"
-            :class="$vuetify.display.smAndDown ? 'pt-16' : 'py-0'"
-            :style="toggleFeedackForm ? { display: 'flex' } : { display: 'none' }"
-          >
-            <feedback-form
-              id="feedback-form"
-              @onClose="feedbackFormClosed"
-            />
-          </v-col>
-
-          <v-col
-            cols="12"
-            class="text-center mt-16 pb-0"
-          >
-            <strong>Thanks for Being Here - Keep Scrolling!</strong>
-          </v-col>
-        </v-row>
-      </div>
-    </v-col>
-    <v-col
-      cols="12"
-      md="11"
-      class="pb-8"
-      style="padding-top: 55px"
-      :class="$vuetify.display.xs ? 'small-screen-footer px-6 pt-16' : 'footer px-16'
-        "
-    >
-      <div
-        class="d-flex flex-column"
-        style="width: 50%; justify-self: self-end"
-      >
-        <h5 style="font-size: 9.6px; margin-bottom: 14.4px">VERSION</h5>
-        <span
-          style="font-size: 13.6px"
-          class="text-white"
-        >
-          2023 <v-icon
-            icon="mdi-copyright"
-            size="15"
-          /> Edition
-        </span>
-      </div>
-      <span class="py-7">
-        <v-divider
-          v-if="$vuetify.display.xs"
-          color="white"
-        />
-      </span>
-      <div
-        :style="$vuetify.display.xs
-          ? { width: '100%' }
-          : { width: '50%', justifyContent: 'end' }
-          "
-        class="d-flex"
-      >
-        <div>
-          <h5 style="font-size: 9.6px; margin-bottom: 14.4px">SOCIALS</h5>
-          <social-component />
+        <div v-show="toggleFeedackForm" id="feedback-form" ref="form" class="contact__form">
+          <feedback-form @onClose="feedbackFormClosed" />
         </div>
       </div>
-    </v-col>
-  </v-row>
+    </div>
+
+    <div class="contact__foot" :class="{ 'contact__foot--stacked': $vuetify.display.xs }">
+      <span class="contact__meta">
+        &copy; {{ new Date().getFullYear() }} M Jawad Haider
+      </span>
+      <social-component icon-size="small" />
+    </div>
+  </section>
 </template>
 
 <script>
-import { gsap } from 'gsap';
-import FeedbackForm from "../../components/FeedbackForm.vue";
-import SocialComponent from "../../components/SocialComponent.vue";
+import { gsap } from '@/plugins/gsap';
+import FeedbackForm from '@/components/FeedbackForm.vue';
+import SocialComponent from '@/components/SocialComponent.vue';
+import { prefersReducedMotion } from '@/utils/motion';
 
 export default {
   components: {
@@ -220,219 +62,178 @@ export default {
   },
   data() {
     return {
-      toggleSnackbar: false,
       toggleFeedackForm: false,
     };
   },
   methods: {
     copyToCipboard(value) {
-      const textField = document.createElement("textarea");
+      const textField = document.createElement('textarea');
       textField.innerText = value;
       document.body.appendChild(textField);
       textField.select();
-      document.execCommand("copy");
+      document.execCommand('copy');
       textField.remove();
-      this.$toast.info("Copied to clipboard!!");
+      this.$toast.info('Copied to clipboard!!');
     },
     getInTouch() {
-      if (!this.toggleFeedackForm) {
-        this.toggleFeedackForm = !this.toggleFeedackForm;
-        gsap.to('#contact-email-phone', {
-          x: 2000,
-          ease: 'power3.inOut',
-          duration: 0.4,
-        });
-        gsap.fromTo('#animate-feedback', {
-          x: -2000,
-          opacity: 0,
-        }, {
-          x: 0,
-          delay: 0.3,
-          opacity: 1,
-          duration: 0.6,
-          ease: 'power3.inOut',
-        });
-
-        setTimeout(() => {
-          const form = document.getElementById("feedback-form");
-          if (!form) return;
-
-          form.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        }, 350);
-
-        clearTimeout();
-      } else {
+      if (this.toggleFeedackForm) {
         this.feedbackFormClosed();
+        return;
       }
+      this.toggleFeedackForm = true;
+
+      if (!prefersReducedMotion()) {
+        gsap.fromTo(
+          this.$refs.form,
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }
+        );
+      }
+
+      setTimeout(() => {
+        this.$refs.form?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 200);
     },
     feedbackFormClosed() {
-      gsap.to('#animate-feedback', {
-        x: 2000,
-        ease: 'power3.inOut',
-        duration: 0.4,
-      });
-      gsap.fromTo('#contact-email-phone', {
-        x: -2000,
-        opacity: 0,
-      }, {
-        x: 0,
-        delay: 0.3,
-        opacity: 1,
-        duration: 0.6,
-        ease: 'power3.inOut',
-      });
-      setTimeout(() => {
-        this.toggleFeedackForm = false;
-      }, 400);
-
-      clearTimeout();
+      this.toggleFeedackForm = false;
     },
-    addAnimationToFooter() {
+    openContactFormFromEvent() {
+      if (!this.toggleFeedackForm) this.getInTouch();
+    },
+    addScrollAnimation() {
+      if (prefersReducedMotion()) return;
+
       gsap.fromTo(
-        '#footer-content',
+        this.$refs.root.querySelectorAll('.contact__inner > *, .contact__foot'),
+        { opacity: 0, y: 24 },
         {
-          y: -200,
-          opacity: 0,
-        }, {
-        y: 0,
-        opacity: 1,
-        duration: 0.7,
-        ease: 'power1.out',
-      }
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: 'power2.out',
+          stagger: 0.1,
+          scrollTrigger: { trigger: this.$refs.root, start: 'top 75%' },
+        }
       );
     },
   },
   mounted() {
-    const options = {
-      rootMargin: "10px",
-      threshold: 0.5,
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          this.addAnimationToFooter();
-          entry.target.classList.add("visible");
-        } else {
-          entry.target.classList.remove("visible");
-        }
-      });
-    }, options);
-
-    observer.observe(this.$refs.animatedDiv);
+    this.addScrollAnimation();
+    window.addEventListener('open-contact-form', this.openContactFormFromEvent);
+  },
+  beforeUnmount() {
+    window.removeEventListener('open-contact-form', this.openContactFormFromEvent);
   },
 };
 </script>
 
 <style lang="scss">
-$gray: #999d9e;
-$lightGray: #37383b;
-$darkGray: #1c1d20;
-
-.footer-section {
-  background-color: $darkGray;
-  box-shadow: 1px 1px 30px #353535;
-  z-index: 1;
-  padding-top: 100px;
-
-  h3 {
-    font-family: "Roboto Condensed", sans-serif;
-  }
-}
-
-.footer-section.tab-view {
-  padding-top: 140px;
-}
-
-
-.btn-get-in-touch {
-  background-color: $lightGray;
-  padding: 20px;
-  height: 190px;
-  width: 190px;
-  min-height: 190px;
-  min-width: 190px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  color: white;
-  text-transform: none;
-  font-size: 23px;
-  transition: 0.1s;
-  border-radius: 50%;
-
-  #text {
-    flex: 1;
-  }
-}
-
-.custom-btn-hover {
-  transition: all 0.3s;
-  position: relative;
+// The footer reads as a distinct closing "tray" rather than another
+// section: rounded top corners reveal a sliver of the page's own
+// background behind it (a deliberate, one-off exception to the "flat,
+// pill-buttons-only radius" rule — used here because it's the one place
+// on the site that benefits from looking like a separate surface), a
+// deepened flat base (darker than $color-bg-darkest) instead of the
+// same accent-glow treatment every other section uses, and an upward
+// shadow that visually separates it from whatever sits above it.
+.contact {
+  // A single quiet glint in one corner (not the broad wash every other
+  // section has) over a deepened flat base — background layers always
+  // paint behind content, so this needs no pseudo-element/z-index.
+  background:
+    radial-gradient(ellipse 32% 40% at 88% 0%, rgba(205, 168, 121, 0.06), transparent 60%),
+    darken($color-bg-darkest, 4%);
+  border-radius: 28px 28px 0 0;
+  box-shadow: 0 -48px 64px -40px rgba(0, 0, 0, 0.65);
+  padding: clamp(96px, 14vh, 180px) clamp(24px, 6vw, 80px) $space-7;
   overflow: hidden;
-  z-index: 1;
+}
 
-  &:before {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 0%;
-    background-color: darken(#353536, 5%);
-    transition: all 0.3s;
-    border-radius: 10rem;
-    z-index: -1;
-  }
+.contact__inner {
+  max-width: $container-max;
+  margin-inline: auto;
+}
+
+.contact__cta {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: inherit;
+  margin-top: $space-4;
+}
+
+.contact__heading {
+  margin: 0;
+  font-family: $font-display;
+  font-size: clamp(2.25rem, 5vw + 1rem, 5rem);
+  font-weight: $fw-medium;
+  letter-spacing: $ls-tight;
+  line-height: 1.05;
+  color: $color-white;
+  transition: color $dur-normal $ease-out;
+}
+
+.contact__cta:hover .contact__heading {
+  color: $color-accent;
+}
+
+.contact__row {
+  margin-top: $space-9;
+  min-height: 64px;
+}
+
+.contact__methods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-7;
+}
+
+.contact__method {
+  background: none;
+  border: none;
+  padding: 0 0 $space-2;
+  font-family: $font-mono;
+  font-size: $fs-body;
+  color: $color-white;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(242, 240, 236, 0.25);
+  cursor: inherit;
+  transition: border-color $dur-fast $ease-out, color $dur-fast $ease-out;
 
   &:hover {
-    color: white;
-
-    &:before {
-      height: 100%;
-    }
+    color: $color-accent;
+    border-color: $color-accent;
   }
 }
 
-.email-button {
-  border: 1px solid $gray;
-  border-radius: 100px;
-
-  .v-btn__content {
-    text-transform: lowercase;
-  }
+.contact__form {
+  max-width: 560px;
 }
 
-.footer {
+.contact__foot {
+  max-width: $container-max;
+  margin: clamp(64px, 10vh, 120px) auto 0;
+  padding-top: $space-5;
+  border-top: $border-hairline;
   display: flex;
-  justify-self: end;
-  align-self: flex-end;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.small-screen-footer {
-  display: flex;
-  flex-direction: column-reverse;
+.contact__foot--stacked {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $space-4;
 }
 
-.fading-col {
-  opacity: 0;
-  transform: translateY(-20px);
-  transition: opacity 1s, transform 0.5s;
-}
-
-.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.move-right {
-  animation: slideInRight 0.3s ease-in forwards;
-}
-
-.move-left {
-  animation: slideInLeft 0.3s ease-in forwards;
+.contact__meta {
+  font-family: $font-mono;
+  font-size: $fs-micro;
+  letter-spacing: $ls-wide;
+  text-transform: uppercase;
+  color: $color-gray;
 }
 </style>

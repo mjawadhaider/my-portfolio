@@ -1,335 +1,248 @@
 <template>
-  <div
-    ref="animatedElement"
-    class="fading mt-3"
-  >
-    <v-row
-      class="about-row"
-      :class="$vuetify.display.smAndDown ? 'px-7' : 'px-12'"
-      justify="center"
-    >
-      <section-header
-        title="About Me"
-        icon="mdi-account-box-outline"
-        :titleColor="secondary"
-        :iconColor="white"
-        :lineStyling="{ width: '300px', background: white }"
-        :titleStyling="$vuetify.display.smAndDown
-            ? 'mt-16 pb-0 text-uppercase'
-            : 'mt-10 pb-0 text-uppercase'
-          "
-        :separator-props="{
-          class: 'mb-4',
-        }"
-      />
-      <!-- Education & Experience -->
-      <v-col
-        cols="12"
-        md="5"
-        sm="12"
-        class="d-flex flex-column pa-0"
-        :class="{ 'mt-4': $vuetify.display.xs }"
-        style="gap: 0.7rem"
-      >
-        <div
-          class="experience-wrapper my-card"
-          variant="tonal"
-        >
-          <h1 :style="{ color: '#ebc29e', fontSize: '34px' }">
-            Experience
-          </h1>
+  <section ref="root" class="about">
+    <div class="about__rail">
+      <p class="section-eyebrow">01 &mdash; Background</p>
+      <h2 class="about__heading">Experience<br />&amp; toolkit</h2>
+      <p class="about__lede">
+        A working history of roles and the technologies I reach for most.
+      </p>
+    </div>
+
+    <div class="about__content">
+      <div class="about-block">
+        <h3 class="about-block__title">Experience</h3>
+
+        <template v-if="experience.length > 0">
           <div
-            v-if="experience.length > 0"
             v-for="(item, index) in experience"
             :key="index"
-            class="mb-6"
+            class="timeline-row"
           >
-            <p
-              class="education-item mt-4"
-              style="font-size: 20px; font-weight: bold"
-            >
-              {{ item.position }}
-            </p>
-            <p class="education-item">
-              {{ item.company }}
-            </p>
-            <p class="education-item text-grey-darken-1">
-              <v-icon
-                color="grey-darken-1"
-                size="22"
-                class="mr-1"
-              >mdi-calendar-blank</v-icon>
-              {{ item.duration }}
-            </p>
-            <div
-              v-if="index + 1 !== experience.length"
-              class="my-4 separator"
-            ></div>
+            <span class="timeline-row__period">{{ item.duration }}</span>
+            <div class="timeline-row__body">
+              <h4 class="timeline-row__role">{{ item.position }}</h4>
+              <p class="timeline-row__org">{{ item.company }}</p>
+              <ul v-if="item.highlights?.length" class="timeline-row__highlights">
+                <li v-for="(highlight, hIndex) in item.highlights" :key="hIndex">
+                  {{ highlight }}
+                </li>
+              </ul>
+            </div>
           </div>
-          <v-skeleton-loader
-            v-else
-            color="#ffffff00"
-            boilerplate
-            type="article"
-          />
-        </div>
-        <div
-          class="education-wrapper my-card pb-6"
-          variant="tonal"
-        >
-          <h1 :style="{ color: '#ebc29e', fontSize: '34px' }">
-            Education
-          </h1>
+        </template>
+        <template v-else>
+          <div v-for="n in 3" :key="`exp-skeleton-${n}`" class="timeline-row">
+            <span class="skeleton skeleton--text" style="width: 64%; max-width: 96px;"></span>
+            <div class="timeline-row__body">
+              <span class="skeleton skeleton--text" style="width: 45%; height: 1.375rem; margin-bottom: 10px;"></span>
+              <span class="skeleton skeleton--text" style="width: 30%;"></span>
+            </div>
+          </div>
+        </template>
+
+        <template v-if="education.length > 0">
           <div
-            v-if="education.length > 0"
             v-for="(item, index) in education"
             :key="index"
+            class="timeline-row timeline-row--muted"
           >
-            <p
-              class="education-item mt-4"
-              style="font-size: 20px; font-weight: bold"
-            >
-              {{ item.degree }}
-            </p>
-            <p class="education-item">
-              <v-icon
-                size="24"
-                class="mr-1"
-              > mdi-school </v-icon>
-              {{ item.institute }}
-            </p>
-            <p class="education-item text-grey-darken-1">
-              <v-icon
-                color="grey-darken-1"
-                size="22"
-                class="mr-1"
-              >mdi-calendar-blank</v-icon>
-              {{ item.duration }}
-            </p>
-            <div
-              v-if="index + 1 !== education.length"
-              class="my-6 separator"
-            ></div>
+            <span class="timeline-row__period">{{ item.duration }}</span>
+            <div class="timeline-row__body">
+              <h4 class="timeline-row__role">{{ item.degree }}</h4>
+              <p class="timeline-row__org">{{ item.institute }}</p>
+            </div>
           </div>
-          <v-skeleton-loader
-            v-else
-            color="#ffffff00"
-            boilerplate
-            type="article"
-          />
-        </div>
-      </v-col>
-      <!-- Skills -->
-      <v-col
-        cols="12"
-        md="5"
-        sm="12"
-        class="skills-wrapper my-card"
-      >
-        <h1 :style="{ color: '#ebc29e', fontSize: '34px' }">
-          Skills
-        </h1>
-        <v-row
-          v-if="skillSet.length > 0"
-          v-for="(item, index) in skillSet"
-          :key="index"
-          class="d-flex align-center justify-center"
-        >
-          <v-col
-            cols="12"
-            md="3"
-            sm="12"
-            class="py-0 pr-0"
-          >
-            <p
-              class="education-item mt-4"
-              style="font-size: medium; font-weight: bold"
-            >
-              {{ item.name }}
-            </p>
-          </v-col>
-          <v-col
-            cols="10"
-            md="9"
-            sm="10"
-            class="pa-0"
-          >
-            <v-progress-linear
-              v-model="item.skillPower"
-              color="#ebc29e"
-              class="mt-4"
-            />
-          </v-col>
-        </v-row>
-        <v-skeleton-loader
-          v-else
-          color="#ffffff00"
-          boilerplate
-          type="article"
-        />
-      </v-col>
-    </v-row>
-  </div>
+        </template>
+      </div>
+
+      <div class="about-block">
+        <h3 class="about-block__title">Toolkit</h3>
+        <skills-network />
+      </div>
+    </div>
+  </section>
 </template>
 
 <script>
-import SectionHeader from "@/components/SectionHeader.vue";
-import { gsap } from "gsap";
-import {
-  fetchExperience,
-  fetchEducation,
-  fetchSkills,
-} from "@/utils/fetchData";
+import { gsap, ScrollTrigger } from '@/plugins/gsap';
+import { fetchExperience, fetchEducation } from '@/utils/fetchData';
+import { prefersReducedMotion } from '@/utils/motion';
+import SkillsNetwork from './SkillsNetwork.vue';
 
 export default {
+  components: {
+    SkillsNetwork,
+  },
   data() {
     return {
       experience: [],
       education: [],
-      skillSet: [],
-      fetchExperience,
-      fetchEducation,
-      fetchSkills,
     };
   },
-  components: {
-    SectionHeader,
-  },
   methods: {
-    getPaddingBottom() {
-      const breakpoints = {
-        654: "715px",
-        658: "703px",
-        667: "663px",
-        740: "600px",
-        812: "529px",
-        844: "483px",
-        851: "476px",
-        915: "384px",
-        1024: "277px",
-        1180: "104px",
-      };
-
-      if (this.$vuetify.display.mdAndUp) {
-        return "100px";
-      }
-      return breakpoints[window.innerHeight];
-    },
     addScrollAnimation() {
-      const options = {
-        rootMargin: "0px",
-        threshold: this.$vuetify.display.smAndDown ? 0.1 : 0.2,
-      };
+      if (prefersReducedMotion()) return;
 
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-            this.addAnimationToCards();
-          } else {
-            entry.target.classList.remove("visible");
-          }
-        });
-      }, options);
-
-      observer.observe(this.$refs.animatedElement);
-    },
-    addAnimationToCards() {
-      const cards = gsap.utils.toArray(".my-card");
-      cards.forEach((card) => {
-        gsap.fromTo(
-          card,
-          {
-            opacity: 0,
-            scale: 0,
-          },
-          {
-            opacity: 1,
-            scale: 1,
-            delay: 0.3,
-            duration: 0.7,
-            ease: "back.out",
-          }
-        );
+      ScrollTrigger.batch('.timeline-row', {
+        start: 'top 90%',
+        onEnter: (elements) => {
+          gsap.fromTo(
+            elements,
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', stagger: 0.08 }
+          );
+        },
       });
+
+      gsap.fromTo(
+        '.skills-network',
+        { opacity: 0, y: 16 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power2.out',
+          scrollTrigger: { trigger: '.skills-network', start: 'top 90%' },
+        }
+      );
+
+      gsap.fromTo(
+        this.$refs.root.querySelectorAll('.about__rail > *'),
+        { opacity: 0, y: 16 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power2.out',
+          stagger: 0.08,
+          scrollTrigger: { trigger: this.$refs.root, start: 'top 75%' },
+        }
+      );
     },
   },
   async mounted() {
     this.addScrollAnimation();
-    this.experience = await this.fetchExperience();
-    this.education = await this.fetchEducation();
-    this.skillSet = await this.fetchSkills();
+    this.experience = await fetchExperience();
+    this.education = await fetchEducation();
   },
 };
 </script>
 
 <style scoped lang="scss">
-.fading {
-  opacity: 0;
-  transform: translateY(-20px);
-  transition: opacity 1s, transform 0.5s;
-  // background-color: #ffc597;
-  padding-bottom: 60px;
-  margin-inline: 50px;
-  border-radius: 22px;
+.about {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: clamp(32px, 6vw, 96px);
+  max-width: $container-max;
+  margin-inline: auto;
+  padding: $space-8 clamp(24px, 6vw, 80px) $space-11;
+}
 
-  @media (max-width: 600px) {
-    margin-inline: 20px;
+.about__rail {
+  position: sticky;
+  top: 104px;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.about__heading {
+  margin: 0;
+  font-family: $font-display;
+  font-size: $fs-h1;
+  font-weight: $fw-medium;
+  letter-spacing: $ls-tight;
+  line-height: $lh-tight;
+  color: $color-white;
+}
+
+.about__lede {
+  max-width: 32ch;
+  color: $color-text-muted;
+  line-height: $lh-loose;
+}
+
+.about__content {
+  display: flex;
+  flex-direction: column;
+  gap: $space-10;
+  min-width: 0;
+}
+
+.about-block__title {
+  font-family: $font-mono;
+  font-size: $fs-micro;
+  letter-spacing: $ls-wide;
+  text-transform: uppercase;
+  color: $color-gray;
+  margin-bottom: $space-5;
+  padding-bottom: $space-3;
+  border-bottom: $border-hairline;
+}
+
+.timeline-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.9fr) minmax(0, 3fr);
+  gap: $space-5;
+  padding-block: $space-5;
+  border-bottom: $border-hairline-faint;
+  transition: opacity $dur-fast $ease-out;
+
+  &:last-child {
+    border-bottom: none;
   }
 }
 
-.about-row {
-  // --v-custom-text: #ebc29e;
-  --v-custom-bg: var(--v-theme-on-surface);
-
-  animation: fadeUp 0.5s ease-in-out;
-  height: auto;
-  z-index: 1;
-  gap: 0.7rem;
+.timeline-row--muted {
+  opacity: 0.7;
 }
 
-$lightGray: #37383b;
-$lightGray: #bdbdbd;
-
-.experience-wrapper,
-.education-wrapper,
-.skills-wrapper {
-  padding: 16px 28px;
-  border-radius: 12px;
-  background-color: #ebc29e;
-  background-color: rgba(var(--v-custom-bg), 0.2);
+.timeline-row__period {
+  font-family: $font-mono;
+  font-size: $fs-caption;
+  color: $color-accent;
+  letter-spacing: $ls-wide;
 }
 
-.skills-wrapper {
-  padding-bottom: 40px;
+.timeline-row__role {
+  margin: 0 0 $space-1;
+  font-family: $font-display;
+  font-size: $fs-h3;
+  font-weight: $fw-medium;
+  color: $color-white;
 }
 
-.education-item {
-  font-family: "Roboto Condensed", sans-serif;
-  color: $lightGray;
+.timeline-row__org {
+  margin: 0;
+  color: $color-text-muted;
 }
 
-.separator {
-  background-color: #616161;
-  background-color: #ebc29e;
-  height: 2px;
-  border-radius: 20%;
-  width: 350px;
+.timeline-row__highlights {
+  margin-top: $space-3;
+  padding-left: $space-4;
+  color: $color-text-muted;
+  font-size: $fs-body-sm;
+  line-height: $lh-loose;
 
-  @media (max-width: 1100px) {
-    width: 100%;
+  li {
+    margin-bottom: $space-1;
   }
 }
 
-.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+@media (max-width: 960px) {
+  .about {
+    grid-template-columns: 1fr;
+  }
 
-.download-btn {
-  border-radius: 30px;
-  height: 50px;
-  border-radius: 30px;
-  padding-inline: 23px;
+  .about__rail {
+    position: static;
+    max-width: 56ch;
+  }
+
+  .timeline-row {
+    grid-template-columns: 1fr;
+    gap: $space-2;
+  }
 }
 </style>

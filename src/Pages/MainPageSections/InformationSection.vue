@@ -1,389 +1,460 @@
 <template>
-  <v-row :style="informationSection" justify="center">
-    <v-col
-      cols="12"
-      md="7"
-      sm="12"
-      :class="$vuetify.display.smAndDown ? 'left-pane pa-0' : 'left-pane'"
-      class="pt-13"
-    >
-      <span
-        id="span-text"
-        class="greetings text-mysecondary"
-        :style="$vuetify.display.smAndDown ? 'margin-top: 50px' : ''"
-      >
-        Hey there! I'm
-      </span>
-      <span class="name text-mywhite"></span>
-      <span class="about text-mysecondary"></span>
-      <!-- <span class="email"> jhaider869@gmail.com </span> -->
+  <section class="hero">
+    <div class="hero__grid">
+      <div class="hero__intro">
+        <p ref="eyebrow" class="hero__eyebrow">Software&nbsp;Engineer</p>
 
-      <button
-        class="resume-btn d-flex justify-center align-center"
-        :style="showBtnText ? { width: '170px' } : { padding: '7px' }"
-        @mouseenter="() => changeShowBtnTextValue(true)"
-        @mouseleave="() => changeShowBtnTextValue(false)"
-        @mousemove="handleMouseMove_Small"
-        @click="routeToLink(details.resumeLink)"
-      >
-        <img
-          :src="require('@/assets/svg-icons/new-tab.svg')"
-          alt="open"
-          style="width: 36px; margin-top: 5px"
-        />
-        <span id="resume-btn-text" style="opacity: 0">
-          {{ showBtnText ? "Download Resume" : "" }}
-        </span>
-      </button>
+        <h1 class="hero__name">
+          <span class="hero__name-mask"><span ref="nameLine1" class="hero__name-line">Muhammad</span></span>
+          <span class="hero__name-mask"><span ref="nameLine2" class="hero__name-line">Jawad Haider</span></span>
+        </h1>
 
-      <div class="social-container">
-        <span class="text-mysecondary" style="font-size: 18px"
-          >Find Me Online:</span
-        >
-        <div>
-          <social-component icon-size="default" />
+        <p ref="statement" class="hero__statement">
+          {{ statement }}
+        </p>
+
+        <div ref="actions" class="hero__actions">
+          <button
+            type="button"
+            class="hero__cta hero__cta--primary my-cursor-hover"
+            @mousemove="handleMouseMove_Small"
+            @mouseleave="handleMouseLeave"
+            @click="openContactForm"
+          >
+            <span>Let's talk</span>
+            <span class="hero__cta-arrow" aria-hidden="true">&#8594;</span>
+          </button>
+          <button
+            type="button"
+            class="hero__cta my-cursor-hover"
+            @mousemove="handleMouseMove_Small"
+            @mouseleave="handleMouseLeave"
+            @click="scrollToSection('projectSectionId')"
+          >
+            <span>View the work</span>
+            <span class="hero__cta-arrow" aria-hidden="true">&#8594;</span>
+          </button>
+          <a
+            v-if="details.resumeLink"
+            class="hero__cta my-cursor-hover"
+            target="_blank"
+            :href="details.resumeLink"
+            @mousemove="handleMouseMove_Small"
+            @mouseleave="handleMouseLeave"
+          >
+            <span>R&eacute;sum&eacute;</span>
+            <span class="hero__cta-arrow" aria-hidden="true">&#8599;</span>
+          </a>
         </div>
       </div>
-      <!-- <div
-        class="text-mywhite"
-        style="margin-top: 46px; font-family: 'Roboto Condensed', sans-serif;"
-      >
-        <p class="text-justify text-center description"></p>
-      </div> -->
-    </v-col>
-    <v-col
-      cols="12"
-      md="5"
-      sm="12"
-      class="d-flex"
-      :class="{
-        'pa-0 mt-10 justify-center': $vuetify.display.smAndDown,
-        'pa-0 justify-end': $vuetify.display.lg,
-        'justify-start': $vuetify.display.lgAndUp,
-      }"
-    >
-      <div
-        id="picture-container"
-        class="picture-box"
-        :class="{ 'mr-0': $vuetify.display.smAndDown }"
-      >
-        <v-img
-          class="picture"
-          style="height: auto; z-index: 0"
-          :src="require('@/assets/my.png')"
-        ></v-img>
-        <v-img
-          id="git"
-          class="floating-icon git"
-          :src="require('@/assets/svg-icons/git.svg')"
-        />
-        <v-img
-          id="js"
-          class="floating-icon js"
-          :src="require('@/assets/svg-icons/js.svg')"
-        />
-        <v-img
-          id="vue"
-          class="floating-icon vue"
-          :src="require('@/assets/svg-icons/vue.svg')"
-        />
-        <v-img
-          id="nodejs"
-          class="floating-icon nodejs"
-          :src="require('@/assets/svg-icons/nodejs.svg')"
-        />
-        <v-img
-          id="dotnet"
-          class="floating-icon dotnet"
-          :src="require('@/assets/svg-icons/dotnet.svg')"
-        />
-        <v-img
-          id="react"
-          class="floating-icon react"
-          :src="require('@/assets/svg-icons/react.svg')"
-        />
+
+      <div ref="metaCol" class="hero__aside">
+        <dl class="hero__meta">
+          <div v-if="heroRole" class="hero__meta-row">
+            <dt>Role</dt>
+            <dd>{{ heroRole }}</dd>
+          </div>
+          <div v-if="heroStatus" class="hero__meta-row">
+            <dt>Status</dt>
+            <dd>{{ heroStatus }}</dd>
+          </div>
+          <div v-if="focusAreas" class="hero__meta-row">
+            <dt>Focus</dt>
+            <dd>{{ focusAreas }}</dd>
+          </div>
+          <div v-if="latestRole" class="hero__meta-row">
+            <dt>Currently</dt>
+            <dd>{{ latestRole }}</dd>
+          </div>
+        </dl>
+
+        <div ref="portrait" class="hero__portrait">
+          <div class="hero__portrait-frame">
+            <img class="hero__portrait-img" :src="require('@/assets/my.png')" alt="Portrait of Muhammad Jawad Haider" />
+          </div>
+          <span class="hero__portrait-caption">JH &mdash; Portfolio</span>
+        </div>
       </div>
-    </v-col>
-  </v-row>
+    </div>
+
+    <div ref="footRow" class="hero__foot">
+      <span class="hero__scroll-cue">
+        <span class="hero__scroll-line" />
+        Scroll
+      </span>
+      <social-component icon-size="x-small" />
+    </div>
+  </section>
 </template>
 
 <script>
-import { gsap } from "gsap";
-import TextPlugin from "gsap/TextPlugin";
-import SocialComponent from "@/components/SocialComponent.vue";
-import { fetchDetails } from "@/utils/fetchData";
+import { gsap } from '@/plugins/gsap';
+import SocialComponent from '@/components/SocialComponent.vue';
+import { fetchDetails, fetchExperience, fetchSkills } from '@/utils/fetchData';
+import { prefersReducedMotion } from '@/utils/motion';
 
-gsap.registerPlugin(TextPlugin);
+const ROLE_LINE = 'Software Engineer';
+const STATEMENT = 'I help teams design and ship reliable web applications, end to end.';
 
 export default {
-  data() {
-    return {
-      showBtnText: false,
-      fetchDetails,
-      details: {},
-    };
-  },
   components: {
     SocialComponent,
   },
-  methods: {
-    changeShowBtnTextValue(value) {
-      this.showBtnText = value;
-      const textEl = document.getElementById("resume-btn-text");
-      textEl.style.opacity = +this.showBtnText;
-      this.handleMouseLeave();
-    },
+  data() {
+    return {
+      details: {},
+      experience: [],
+      skills: [],
+      statement: STATEMENT,
+    };
   },
   computed: {
-    informationSection() {
-      const commonStyling = {
-        "max-width": "100vw",
-        height: "calc(100vh - 80px)",
-      };
-      if (this.$vuetify.display.sm)
-        return { ...commonStyling, "padding-inline": "90px", height: "auto" };
-      else if (this.$vuetify.display.xs)
-        return { ...commonStyling, "padding-inline": "50px", height: "auto" };
-      else return { ...commonStyling, "padding-inline": "250px" };
+    heroRole() {
+      return ROLE_LINE.split('|')[0]?.trim() || '';
+    },
+    heroStatus() {
+      return ROLE_LINE.split('|')[1]?.trim() || '';
+    },
+    focusAreas() {
+      return [...this.skills]
+        .sort((a, b) => (a.tier ?? 2) - (b.tier ?? 2) || (b.years ?? 0) - (a.years ?? 0))
+        .slice(0, 3)
+        .map((s) => s.name)
+        .join(' · ');
+    },
+    latestRole() {
+      const latest = this.experience[0];
+      if (!latest) return '';
+      return [latest.position, latest.company].filter(Boolean).join(' @ ');
+    },
+  },
+  methods: {
+    scrollToSection(elementId) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const scrollPosition = el.getBoundingClientRect().top + window.scrollY - 35;
+      window.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+    },
+    openContactForm() {
+      this.scrollToSection('footerSectionId');
+      window.dispatchEvent(new Event('open-contact-form'));
+    },
+    playEntrance() {
+      if (prefersReducedMotion()) return;
+
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' }, delay: 0.4 });
+
+      tl.fromTo(this.$refs.eyebrow, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5 })
+        .fromTo(
+          [this.$refs.nameLine1, this.$refs.nameLine2],
+          { yPercent: 115 },
+          { yPercent: 0, duration: 0.9, stagger: 0.1, ease: 'expo.out' },
+          '-=0.2'
+        )
+        .fromTo(this.$refs.statement, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
+        .fromTo(this.$refs.actions, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6 }, '-=0.35')
+        .fromTo(
+          this.$refs.metaCol,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.6 },
+          '-=0.5'
+        )
+        .fromTo(
+          '.hero__meta-row',
+          { opacity: 0, x: 16 },
+          { opacity: 1, x: 0, duration: 0.5, stagger: 0.08 },
+          '-=0.4'
+        )
+        .fromTo(
+          this.$refs.portrait,
+          { clipPath: 'inset(0 0 100% 0)' },
+          { clipPath: 'inset(0 0 0% 0)', duration: 0.9, ease: 'expo.out' },
+          '-=0.5'
+        )
+        .fromTo(this.$refs.footRow, { opacity: 0 }, { opacity: 1, duration: 0.6 }, '-=0.3');
     },
   },
   async mounted() {
-    const profilePic = gsap.fromTo(
-      "#picture-container",
-      {
-        y: 30,
-        opacity: 0,
-        scale: 0,
-      },
-      {
-        y: 0,
-        duration: 2,
-        scale: 1,
-        opacity: 1,
-        delay: 1,
-        ease: "back.inOut",
-      }
-    );
+    this.playEntrance();
 
-    const fromToTextConfig = {
-      from: {
-        opacity: 0,
-      },
-      to: (text, args) => ({
-        opacity: 1,
-        duration: 1,
-        text: text,
-        ease: "none",
-        delay: 1,
-        paused: true,
-        ...args,
-      }),
-    };
-    const desc =
-      "Welcome to my portfolio! I am a skilled software engineer experienced in frontend and backend technologies. With a strong foundation in computer science, I create exceptional user experiences through clean and efficient code. Browse through my projects to see my expertise. Let's connect and Thank you for visiting!";
-
-    const socialBtns = gsap.fromTo(
-      ".social-container",
-      {
-        opacity: 0,
-        scale: 0,
-      },
-      {
-        opacity: 1,
-        scale: 1,
-        ease: "back.inOut",
-        duration: 1,
-        paused: true,
-      }
-    );
-
-    const resumeBtn = gsap.fromTo(
-      ".resume-btn",
-      { opacity: 0 },
-      {
-        opacity: 1,
-        ease: "sine.inOut",
-        paused: true,
-        onComplete: () => {
-          socialBtns.play();
+    if (!prefersReducedMotion()) {
+      gsap.to(this.$refs.portrait, {
+        yPercent: 8,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: this.$refs.portrait,
+          scrub: true,
         },
-      }
-    );
-    const about = gsap.fromTo(
-      ".about",
-      fromToTextConfig.from,
-      fromToTextConfig.to("Software Engineer | Junior at UET", {
-        delay: 1.3,
-        paused: true,
-        onComplete: () => {
-          resumeBtn.play();
-        },
-      })
-    );
-    const name = gsap.fromTo(
-      ".name",
-      fromToTextConfig.from,
-      fromToTextConfig.to("Muhammad Jawad Haider", {
-        delay: 1.3,
-        paused: true,
-      })
-    );
+      });
+    }
 
-    const HiThere = gsap.fromTo(
-      ".greetings",
-      {
-        x: -1000,
-      },
-      {
-        duration: 1.5,
-        x: 0,
-        ease: "elastic.out",
-        paused: true,
-        onComplete: () => {
-          name.play();
-          about.play();
-        },
-      }
-    );
-
-    HiThere.play();
-    profilePic.play();
-    name.play();
-    about.play();
-
-    const icons = gsap.utils.toArray(".floating-icon");
-
-    icons.forEach((icon, index) => {
-      gsap.fromTo(
-        icon,
-        {
-          scale: 0,
-          opacity: 0,
-          delay: 1,
-        },
-        {
-          scale: 1,
-          opacity: 1,
-          repeat: -1,
-          delay: 3 + index / 2,
-          yoyo: true,
-          duration: 3,
-          ease: "circ.inOut",
-        }
-      );
-    });
-    this.details = await fetchDetails();
+    const [details, experience, skills] = await Promise.all([
+      fetchDetails(),
+      fetchExperience(),
+      fetchSkills(),
+    ]);
+    this.details = details;
+    this.experience = experience;
+    this.skills = skills;
   },
 };
 </script>
 
 <style lang="scss">
-.left-pane {
+.hero {
+  min-height: min(100svh, 960px);
   display: flex;
   flex-direction: column;
-  line-height: 1.2;
-  padding-bottom: 170px !important;
-}
-
-.picture-box {
-  height: 48vh;
-  display: flex;
   justify-content: center;
-  margin-top: 60px;
-  margin-right: 22px;
+  padding: clamp(120px, 14vh, 180px) clamp(24px, 6vw, 80px) $space-7;
+  max-width: $container-wide;
+  margin-inline: auto;
+}
+
+.hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+  gap: clamp(48px, 8vw, 120px);
+  align-items: start;
+}
+
+.hero__eyebrow {
+  font-family: $font-mono;
+  font-size: $fs-caption;
+  letter-spacing: $ls-wide;
+  text-transform: uppercase;
+  color: $color-accent;
+  margin-bottom: $space-5;
+}
+
+.hero__name {
+  margin: 0;
+}
+
+.hero__name-mask {
+  display: block;
+  overflow: hidden;
+}
+
+.hero__name-line {
+  display: block;
+  font-family: $font-display;
+  font-size: $fs-hero;
+  font-weight: $fw-medium;
+  letter-spacing: $ls-tight;
+  line-height: 1.02;
+  color: $color-white;
+}
+
+.hero__statement {
+  max-width: 46ch;
+  margin-top: $space-6;
+  font-size: clamp(1.0625rem, 0.4vw + 1rem, 1.25rem);
+  line-height: $lh-loose;
+  color: $color-text-muted;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-6;
+  margin-top: $space-8;
+}
+
+.hero__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  background: none;
+  border: none;
+  padding: 0 0 $space-2;
+  font-family: $font-body;
+  font-size: $fs-body;
+  font-weight: $fw-medium;
+  color: $color-white;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(242, 240, 236, 0.25);
+  cursor: inherit;
+  transition: border-color $dur-fast $ease-out, color $dur-fast $ease-out;
+}
+
+.hero__cta-arrow {
+  transition: transform $dur-fast $ease-out;
+}
+
+.hero__cta:hover {
+  border-color: $color-white;
+}
+
+.hero__cta:hover .hero__cta-arrow {
+  transform: translate(3px, -3px);
+}
+
+.hero__cta--primary {
   position: relative;
-
-  .floating-icon {
-    position: absolute;
-    width: 10%;
-    height: auto;
-  }
-  .git {
-    top: -12%;
-    right: 34%;
-  }
-  .js {
-    top: 2%;
-    left: 2%;
-  }
-  .vue {
-    top: 24%;
-    right: -9%;
-  }
-  .nodejs {
-    bottom: -12%;
-    left: 34%;
-  }
-  .dotnet {
-    bottom: 14%;
-    right: -6%;
-  }
-  .react {
-    bottom: 34%;
-    left: -13%;
-  }
+  color: $color-accent;
+  border-color: transparent;
 }
 
-.about,
-.greetings {
-  font-size: 35px;
-  font-family: "Roboto Condensed", sans-serif;
+.hero__cta--primary::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: $gradient-accent;
+  opacity: 0.55;
+  transition: opacity $dur-fast $ease-out;
 }
 
-.about {
-  font-size: 28px;
-  color: #2d2c2c;
-  margin-top: 15px;
+.hero__cta--primary:hover::after {
+  opacity: 1;
 }
 
-.name {
-  font-size: 50px;
-  font-weight: bold;
-  color: #363636;
-}
-
-.social-container {
-  position: relative;
-  margin-top: auto;
+.hero__aside {
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: $space-9;
+  padding-top: $space-2;
 }
 
-.email {
-  font-size: 15px;
-  color: #2d2c2c;
-  font-weight: bold;
+.hero__meta {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  padding-top: $space-3;
+  border-top: $border-hairline;
 }
 
-.resume-btn {
-  border-radius: 22px;
-  background-color: #ec7e1e;
-  width: 48px;
-  padding: 7px 20px;
-  margin-top: 50px;
-  height: 48px;
-  transition: 0.4s ease;
+.hero__meta-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: $space-4;
+  font-size: $fs-body-sm;
 
-  span {
-    transition-delay: 0.2s;
+  dt {
+    font-family: $font-mono;
+    font-size: $fs-micro;
+    letter-spacing: $ls-wide;
+    text-transform: uppercase;
+    color: $color-gray;
+    white-space: nowrap;
+  }
+
+  dd {
+    margin: 0;
+    text-align: right;
+    color: $color-white;
   }
 }
 
-@media (max-width: 900px) {
-  .picture-box {
-    height: 40vh;
-    margin-bottom: 90px;
+.hero__portrait {
+  position: relative;
+  align-self: flex-end;
+  width: min(100%, 280px);
+}
+
+.hero__portrait::before {
+  content: '';
+  position: absolute;
+  inset: -28px;
+  background: $gradient-glow-accent;
+  filter: blur(6px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.hero__portrait-frame {
+  position: relative;
+  border: $border-hairline;
+  padding: $space-2;
+}
+
+.hero__portrait-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: grayscale(0.55) contrast(1.02);
+  transition: filter $dur-slow $ease-out;
+}
+
+.hero__portrait:hover .hero__portrait-img {
+  filter: grayscale(0);
+}
+
+.hero__portrait-caption {
+  display: block;
+  margin-top: $space-3;
+  font-family: $font-mono;
+  font-size: $fs-micro;
+  letter-spacing: $ls-wide;
+  text-transform: uppercase;
+  color: $color-gray;
+  text-align: right;
+}
+
+.hero__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: clamp(56px, 8vh, 110px);
+  padding-top: $space-5;
+  border-top: $border-hairline;
+}
+
+.hero__scroll-cue {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  font-family: $font-mono;
+  font-size: $fs-micro;
+  letter-spacing: $ls-wide;
+  text-transform: uppercase;
+  color: $color-gray;
+}
+
+.hero__scroll-line {
+  width: 32px;
+  height: 1px;
+  background: $color-gray;
+}
+
+@media (max-width: 960px) {
+  .hero__grid {
+    grid-template-columns: 1fr;
+    gap: $space-8;
   }
 
-  .social-container {
-    margin-top: 20px;
+  .hero__aside {
+    flex-direction: column-reverse;
+  }
+
+  .hero__portrait {
+    align-self: flex-start;
+    width: min(60%, 220px);
+  }
+
+  .hero__meta-row dd {
+    text-align: right;
   }
 }
 
-@media (min-width: 1900px) {
-  .picture-box {
-    height: 40vh;
+@media (max-width: 600px) {
+  .hero {
+    padding-top: 110px;
+  }
+
+  .hero__statement {
+    max-width: 100%;
+  }
+
+  .hero__foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $space-4;
   }
 }
 </style>

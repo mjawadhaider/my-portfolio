@@ -1,0 +1,134 @@
+// Single source of truth for the portfolio's design tokens.
+// Auto-injected into every component's <style lang="scss"> block via
+// vue.config.js's css.loaderOptions.sass.additionalData — do not @import
+// this manually in component files.
+//
+// JS-side equivalents of the color tokens (for :color props / inline
+// :style bindings, which can't read SCSS variables) live in
+// src/Mixins/CommonMixin.js — keep both in sync if a color value changes.
+//
+// Design language: editorial / quiet-luxury. Serif for display moments,
+// a technical mono for small metadata (numbers, dates, labels), and a
+// clean sans for body copy. Depth comes from typography, whitespace,
+// hairline dividers, and — used deliberately, never as decoration for
+// its own sake — soft, low-opacity accent gradients ($gradient-*
+// tokens below) for a premium sheen on the page background and a few
+// signature surfaces. Radius is used sparingly (pill buttons only);
+// most surfaces stay flat, separated by $border-hairline rather than
+// cards or shadows.
+
+// ---- Color ----
+$color-bg-darkest:  #17181a; // darkest surfaces (footer, dropdowns)
+$color-bg-base:     #1c1d20; // app shell background — the "ink"
+$color-bg-elevated: #222327; // faint elevation, still reads as flat
+$color-surface:     #26272b; // rarely-used surface (form fields etc.)
+$color-gray:        #8c8f92;
+$color-text-muted:  #9a9d9f; // secondary body text
+$color-white:       #f2f0ec; // warm off-white, not pure white
+
+$color-accent:      #cda879; // brand accent — warm, muted, used sparingly
+$color-accent-dark: #b8895a; // deeper variant for hover/pressed states
+$color-ink:         #17181a; // near-black text-on-accent
+
+// The one deliberate semantic exception to "no new colors": a muted,
+// desaturated warm red reserved solely for error/destructive feedback
+// (toasts, form validation) — never decorative. Kept in the same warm,
+// low-saturation family as $color-accent so it still reads as part of
+// this palette rather than a generic bootstrap-red.
+$color-error:       #c17a68;
+
+// Note: previous iterations used a bright orange (#ec7e1e) for CTAs and
+// gradient buttons. Removed — reads as "developer template", not quiet
+// luxury. $color-accent now carries all emphasis, deliberately sparingly.
+
+// ---- Typography ----
+// Display: large editorial headlines, hero name, project titles, numerals.
+// Body: everything else — paragraphs, UI chrome, nav, buttons.
+// Mono: small technical metadata — index numbers, dates, tech labels.
+$font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+$font-heading: $font-display; // kept for backward compat with existing .text-h* utilities
+$font-body: 'Fira Sans', -apple-system, sans-serif;
+$font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+$fs-hero:    clamp(3rem, 4vw + 1.75rem, 6.5rem);   // hero display line
+$fs-h1:      clamp(2.25rem, 2.4vw + 1.5rem, 3.5rem); // section titles
+$fs-h2:      clamp(1.5rem, 1vw + 1.15rem, 2rem);
+$fs-h3:      1.375rem;
+$fs-body:    1rem;
+$fs-body-sm: 0.9375rem;
+$fs-caption: 0.8125rem;
+$fs-micro:   0.75rem; // uppercase mono labels
+
+$fw-regular:  400;
+$fw-medium:   500;
+$fw-semibold: 600;
+$fw-bold:     700;
+
+$lh-tight:  1.1;
+$lh-snug:   1.25;
+$lh-normal: 1.5;
+$lh-loose:  1.7;
+
+$ls-wide:  0.14em;  // uppercase mono/micro labels
+$ls-tight: -0.02em; // large display type
+
+// ---- Spacing (4px base unit) ----
+$space-1: 4px;
+$space-2: 8px;
+$space-3: 12px;
+$space-4: 16px;
+$space-5: 24px;
+$space-6: 32px;
+$space-7: 48px;
+$space-8: 64px;
+$space-9: 96px;
+$space-10: 128px;
+$space-11: 160px; // section rhythm on desktop
+
+// ---- Layout ----
+$container-max: 1180px;  // editorial reading column (nav, about, footer)
+$container-wide: 1440px; // full-bleed project showcases
+
+// ---- Radius ----
+// Used sparingly and deliberately — pill buttons/chips only. Everything
+// else is flat, separated by hairline borders instead of rounded cards.
+$radius-sm:     4px;
+$radius-md:     8px;
+$radius-pill:   999px;
+$radius-circle: 50%;
+
+// ---- Borders ----
+$border-hairline:       1px solid rgba(242, 240, 236, 0.1);
+$border-hairline-faint: 1px solid rgba(242, 240, 236, 0.06);
+$border-accent:         1px solid rgba(205, 168, 121, 0.4);
+
+// ---- Elevation ----
+// Reserved for true overlays (dialogs, dropdowns) — not for cards.
+$shadow-sm:     0 1px 8px rgba(0, 0, 0, 0.35);
+$shadow-md:     0 8px 24px rgba(0, 0, 0, 0.45);
+$shadow-lg:     0 16px 48px rgba(0, 0, 0, 0.5);
+
+// ---- Gradients ----
+// Sparingly used for a premium sheen: large, soft, low-opacity glows
+// derived from the accent color. Always big and slow to notice — never
+// a visible "rainbow" band. $gradient-page-bg is the app-wide backdrop;
+// the rest are for the handful of signature surfaces called out where
+// they're used (nav progress bar, hero portrait, primary CTA, project
+// visuals, testimonial marks, skeleton shimmer).
+$gradient-page-bg:
+  radial-gradient(ellipse 70% 55% at 14% -8%, rgba(205, 168, 121, 0.12), transparent 60%),
+  radial-gradient(ellipse 55% 45% at 102% 18%, rgba(205, 168, 121, 0.07), transparent 55%),
+  radial-gradient(ellipse 65% 50% at 50% 100%, rgba(205, 168, 121, 0.08), transparent 62%),
+  linear-gradient(180deg, #1c1d20 0%, #17181a 100%);
+
+$gradient-accent:      linear-gradient(135deg, #e4c79a 0%, $color-accent 55%, $color-accent-dark 100%);
+$gradient-accent-soft: linear-gradient(180deg, rgba(205, 168, 121, 0.16), rgba(205, 168, 121, 0));
+$gradient-glow-accent: radial-gradient(circle, rgba(205, 168, 121, 0.22), transparent 70%);
+$gradient-scrim:       linear-gradient(180deg, rgba(23, 24, 26, 0) 40%, rgba(23, 24, 26, 0.55) 100%);
+
+// ---- Motion ----
+$ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+$ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+$dur-fast:   0.25s;
+$dur-normal: 0.45s;
+$dur-slow:   0.8s;
