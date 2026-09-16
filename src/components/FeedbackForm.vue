@@ -1,64 +1,57 @@
 <template>
-  <v-sheet
-    :width="$vuetify.display.xs ? 360 : 550"
-    class="mx-auto"
-    color="transparent"
-  >
-    <h3 class="mb-4 text-center">Feel Free to Reach Out and Connect!!</h3>
+  <div class="feedback-form">
+    <p class="feedback-form__lede">Send a note &mdash; I read every one.</p>
     <v-form
       ref="feedbackForm"
+      class="feedback-form__fields"
       @submit.prevent="submitFeedback"
       :disabled="feedbackLoading"
     >
-      <div>
-        <v-text-field
-          v-model="name"
-          label="Your Name"
-          :color="gray"
-          class="mb-4"
-          :hide-details="true"
-        />
-        <v-text-field
-          v-model="email"
-          class="mb-4"
-          label="Email"
-          :color="gray"
-          :hide-details="true"
-        />
-        <v-textarea
-          v-model="message"
-          class="mb-4"
-          label="Feedback Message"
-          :color="gray"
-          :hide-details="true"
-        />
-        <div class="d-flex justify-center mt-2">
-          <v-btn
-            class="custom-btn-hover mr-4"
-            rounded
-            color="grey-lighten-2"
-            variant="outlined"
-            style="justify-self: end;"
-            :disabled="feedbackLoading"
-            @click="onClose"
-          >
-            Close
-          </v-btn>
-          <v-btn
-            type="submit"
-            class="custom-btn-hover"
-            rounded
-            color="grey-lighten-2"
-            variant="outlined"
-            :loading="feedbackLoading"
-            style="justify-self: end;"
-          >
-            Submit
-          </v-btn>
-        </div>
+      <v-text-field
+        v-model="name"
+        label="Name"
+        variant="plain"
+        density="comfortable"
+        class="feedback-field"
+        hide-details="auto"
+        :rules="[rules.required]"
+      />
+      <v-text-field
+        v-model="email"
+        label="Email"
+        variant="plain"
+        density="comfortable"
+        class="feedback-field"
+        hide-details="auto"
+        :rules="[rules.required, rules.email]"
+      />
+      <v-textarea
+        v-model="message"
+        label="Message"
+        variant="plain"
+        density="comfortable"
+        rows="2"
+        auto-grow
+        class="feedback-field"
+        hide-details="auto"
+        :rules="[rules.required]"
+      />
+      <div class="feedback-form__actions">
+        <button
+          type="button"
+          class="hero__cta my-cursor-hover"
+          :disabled="feedbackLoading"
+          @click="onClose"
+        >
+          Cancel
+        </button>
+        <button type="submit" class="hero__cta hero__cta--primary my-cursor-hover">
+          <span>{{ feedbackLoading ? 'Sending…' : 'Send' }}</span>
+          <span class="hero__cta-arrow" aria-hidden="true">&#8594;</span>
+        </button>
       </div>
     </v-form>
-  </v-sheet>
+  </div>
 </template>
 
 <script>
@@ -70,24 +63,17 @@ export default {
       name: '',
       email: '',
       message: '',
-      snackbarMessage: '',
       feedbackLoading: false,
-      toggleSnackbar: false,
-      isError: false,
+      rules: {
+        required: (v) => !!v?.trim() || 'This field is required',
+        email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Enter a valid email',
+      },
     };
   },
   methods: {
     async submitFeedback() {
-      this.$refs.feedbackForm?.resetValidation();
-
-      if (!this.name && !this.email) {
-        this.$toast.error('Name or Email must be provided');
-        return;
-      }
-      if (!this.message) {
-        this.$toast.error('Your Feedback is appreciable!');
-        return;
-      }
+      const { valid } = await this.$refs.feedbackForm.validate();
+      if (!valid) return;
 
       try {
         await this.submitSpreadSheet();
@@ -95,9 +81,7 @@ export default {
         this.$toast.success('Your feedback has been submitted :)');
         this.onClose();
       } catch (err) {
-        this.isError = true;
-        this.snackbarMessage = err;
-        this.toggleSnackbar = true;
+        this.$toast.error('Something went wrong, please try again.');
       }
     },
     async submitSpreadSheet() {
@@ -124,17 +108,62 @@ export default {
       };
 
       this.feedbackLoading = true;
-      await axios.post(url, payload);
-      this.feedbackLoading = false;
+      try {
+        await axios.post(url, payload);
+      } finally {
+        this.feedbackLoading = false;
+      }
     },
     onClose() {
       this.$emit('onClose');
       this.name = '';
       this.email = '';
       this.message = '';
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
-<style></style>
+<style scoped lang="scss">
+.feedback-form__lede {
+  color: $color-text-muted;
+  margin-bottom: $space-5;
+}
+
+.feedback-form__fields {
+  display: flex;
+  flex-direction: column;
+}
+
+.feedback-field {
+  :deep(.v-field) {
+    background: none;
+    border-radius: 0;
+    border-bottom: $border-hairline;
+    padding-inline: 0;
+  }
+
+  :deep(.v-field__input),
+  :deep(.v-label) {
+    padding-inline: 0;
+    font-family: $font-body;
+    color: $color-white;
+  }
+
+  :deep(.v-field--focused) {
+    border-color: $color-accent;
+  }
+}
+
+.feedback-form__actions {
+  display: flex;
+  align-items: center;
+  gap: $space-6;
+  margin-top: $space-6;
+}
+
+button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+</style>

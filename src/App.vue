@@ -1,5 +1,5 @@
 <template>
-  <v-app :style="appStyle">
+  <v-app>
     <div
       v-if="!$vuetify.display.smAndDown"
       cursor-outline
@@ -17,24 +17,28 @@
         @toggleTabIndex="toggleTabIndex"
       />
     </v-main>
+    <app-toaster />
   </v-app>
 </template>
 
 <script>
 import AppBar from '@/components/AppBar.vue';
 import MainPage from '@/Pages/MainPage.vue';
+import AppToaster from '@/components/AppToaster.vue';
 
 export default {
   name: 'App',
   components: {
     AppBar,
     MainPage,
+    AppToaster,
   },
   data: () => {
     return {
       activeTabIndex: 0,
       disbaleSnackbar: false,
       isFooterVisible: false,
+      cursorHoverSelector: 'button, .my-cursor-hover',
     };
   },
   computed: {
@@ -69,17 +73,6 @@ export default {
           : { ...tab, isActive: false }
       );
     },
-    // 806953
-    // 3b3128
-    appStyle() {
-      return {
-        // 'background-color': this.darkGray,
-        'background-color': '#222',
-        height: '100vh',
-        'max-height': '100vh',
-        'min-height': '100vh',
-      };
-    },
   },
   methods: {
     toggleTabIndex(element) {
@@ -92,33 +85,126 @@ export default {
         : '';
       this.disbaleSnackbar = toggle;
     },
+    handleCursorMouseMove(e) {
+      if (!this.customCursorEl) return;
+      this.customCursorEl.style.left = `${e.pageX + 7}px`;
+      this.customCursorEl.style.top = `${e.pageY + 7}px`;
+    },
+    handleCursorClick() {
+      if (!this.customCursorEl) return;
+      this.customCursorEl.classList.add('large');
+      setTimeout(() => {
+        this.customCursorEl?.classList.remove('large');
+      }, 200);
+    },
+    isCursorHoverTarget(element) {
+      return element?.closest?.(this.cursorHoverSelector) ?? null;
+    },
+    handleCursorHoverOver(e) {
+      if (!this.customCursorEl) return;
+      if (!this.isCursorHoverTarget(e.target)) return;
+      if (this.isCursorHoverTarget(e.relatedTarget)) return;
+
+      this.customCursorEl.classList.add('large');
+      document.body.classList.add('hover');
+    },
+    handleCursorHoverOut(e) {
+      if (!this.customCursorEl) return;
+      if (!this.isCursorHoverTarget(e.target)) return;
+      if (this.isCursorHoverTarget(e.relatedTarget)) return;
+
+      this.customCursorEl.classList.remove('large');
+      document.body.classList.remove('hover');
+    },
   },
   created() {
     document.title = 'Jawad Haider';
+  },
+  mounted() {
+    this.customCursorEl = document.querySelector('[cursor-outline]');
+    if (!this.$vuetify.display.mdAndUp || !this.customCursorEl) return;
+
+    window.addEventListener('mousemove', this.handleCursorMouseMove);
+    window.addEventListener('click', this.handleCursorClick);
+    document.addEventListener('mouseover', this.handleCursorHoverOver);
+    document.addEventListener('mouseout', this.handleCursorHoverOut);
+  },
+  beforeUnmount() {
+    window.removeEventListener('mousemove', this.handleCursorMouseMove);
+    window.removeEventListener('click', this.handleCursorClick);
+    document.removeEventListener('mouseover', this.handleCursorHoverOver);
+    document.removeEventListener('mouseout', this.handleCursorHoverOut);
   },
 };
 </script>
 
 <style lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Fira+Sans&display=swap');
-
-$gray: #999d9e;
-$darkGray: #1c1d20;
-$lightGray: #37383b;
-
-
-$primaryBackground: #31363F;
-$primary: #222831;
-// $secondary: #76ABAE;
-// $secondary: #adeef1;
-$secondary: #d5a880;
-$secondary-dark: #ec7e1e;
-$mywhite: #EEEEEE;
-
 * {
-  font-family: 'Fira Sans', sans-serif;
-  color: #fff;
+  font-family: $font-body;
+  color: $color-white;
+}
+
+.v-application {
+  // Longhand + !important: Vuetify's own theme CSS sets a background
+  // shorthand on this same selector, and load order between the two
+  // isn't guaranteed — this must win without depending on it.
+  background-image: $gradient-page-bg !important;
+  background-repeat: no-repeat !important;
+  // min-height only (never height/max-height — those clamp this box to
+  // exactly one viewport tall, which used to cut the gradient off
+  // partway down the page on any view taller than 100vh, e.g. the hero's
+  // stacked mobile layout. min-height just guarantees full coverage on
+  // short pages without capping how tall this box is allowed to grow.
+  min-height: 100vh;
+}
+
+// Shared skeleton-loading primitive. Composed on a per-section basis to
+// mirror that section's real layout (see AboutSection/ProjectSection/
+// TestimonialsSection) rather than a generic placeholder shape — the
+// shimmer sweep doubles as one of the app's premium gradient accents.
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton {
+  display: block;
+  background: linear-gradient(
+    100deg,
+    rgba(242, 240, 236, 0.06) 0%,
+    rgba(242, 240, 236, 0.06) 35%,
+    rgba(205, 168, 121, 0.16) 50%,
+    rgba(242, 240, 236, 0.06) 65%,
+    rgba(242, 240, 236, 0.06) 100%
+  );
+  background-size: 250% 100%;
+  animation: skeleton-shimmer 2.4s ease-in-out infinite;
+  border-radius: $radius-sm;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    background-position: 0 0;
+  }
+}
+
+.skeleton--text {
+  height: 0.85em;
+}
+
+.skeleton--circle {
+  border-radius: $radius-circle;
+  flex: none;
+}
+
+::selection {
+  background-color: $color-accent;
+  color: $color-ink;
 }
 
 .v-btn,
@@ -135,48 +221,71 @@ $mywhite: #EEEEEE;
   font-size: 16px;
 }
 
-.v-toast {
-  .v-toast__item {
-    width: 300px;
-  }
+.text-h1 {
+  font-family: $font-heading;
+  font-size: $fs-h1;
+  font-weight: $fw-bold;
+  line-height: $lh-tight;
+}
 
-  .v-toast__text {
-    width: 100%;
-    text-align: center;
-    padding: 0;
-    padding-block: 10px;
-    margin-inline: 0;
-  }
+.text-h2 {
+  font-family: $font-heading;
+  font-size: $fs-h2;
+  font-weight: $fw-semibold;
+  line-height: $lh-tight;
+}
+
+.text-h3 {
+  font-family: $font-heading;
+  font-size: $fs-h3;
+  font-weight: $fw-semibold;
+  line-height: $lh-tight;
+}
+
+.text-body-loose {
+  font-size: $fs-body;
+  line-height: $lh-loose;
+}
+
+// Shared small uppercase mono label used to open every major section
+// ("01 — Work", "Toolkit", etc.) — the recurring wayfinding device that
+// ties the editorial sections together.
+.section-eyebrow {
+  font-family: $font-mono;
+  font-size: $fs-caption;
+  letter-spacing: $ls-wide;
+  text-transform: uppercase;
+  color: $color-accent;
 }
 
 .text-darkGray {
-  color: $darkGray;
+  color: $color-bg-darkest;
 }
 
 .text-gray {
-  color: $gray;
+  color: $color-gray;
 }
 
 .text-lightGray {
-  color: $lightGray;
+  color: $color-surface;
 }
 
 .text-myprimary {
-  color: $primary;
+  color: $color-bg-base;
 }
 
 .text-mysecondary {
-  color: $secondary !important;
+  color: $color-accent !important;
 }
 
 .text-mywhite {
-  color: $mywhite !important;
+  color: $color-white !important;
 }
 
 .main-container {
-  padding-top: 140px !important;
+  padding-top: 0 !important;
 
-  @media (max-width: 900px) {
+  @media (max-width: 960px) {
     overflow: hidden;
   }
 }

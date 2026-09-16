@@ -1,150 +1,82 @@
 <template>
   <div>
-    <v-navigation-drawer
-      v-if="$vuetify.display.smAndDown"
-      app
-      v-model="toggle"
-      absolute
-      :color="darkGray"
-      style="position: fixed"
-      elevation="10"
-      location="right"
-      width="500"
-    >
-      <div style="color: white" class="mr-6 py-4 d-flex justify-end">
-        <v-btn
-          variant="tonal"
-          size="x-large"
-          icon
-          @click.stop="toggleNavigationDrawer"
-        >
-          <v-icon size="x-large" color="white" icon="mdi-close" />
-        </v-btn>
-      </div>
-      <div style="width: 100%; margin: 83px 16px 24px" class="px-3">
-        <span
-          style="color: gray; font-size: 13px; margin-bottom: 10px"
-          class="upper-case"
-        >
-          Navigation
-        </span>
-        <div class="stripe" />
-      </div>
-      <v-list v-if="showNavigationList" class="px-5" nav>
-        <div v-for="(tab, index) in tabs" :key="index">
-          <v-list-item
-            :title="tab.title"
-            :active="tab.isActive"
-            :base-color="gray"
-            color="white"
-            class="mt-1 upper-case navigation-list"
-            @click="scrollToSection(tab, index)"
-          >
-            <template v-slot:append>
-              <div class="dot" v-if="tab.isActive"></div>
-            </template>
-          </v-list-item>
-        </div>
-      </v-list>
-      <div
-        :style="$vuetify.display.xs ? { height: '34%' } : { height: '38%' }"
-        style="align-content: space-between"
-        class="d-flex flex-column justify-end mx-7 mb-12"
-      >
-        <div class="stripe mb-5" style="width: 100%" />
-        <span class="text-gray my-5">SOCIALS</span>
-        <div
-          v-if="showNavigationList"
-          style="animation: slideInRight 0.5s ease-in forwards"
-        >
-          <social-component
-            :iconSize="$vuetify.display.xs ? 'default' : 'x-large'"
-          />
-        </div>
-      </div>
-    </v-navigation-drawer>
-    <v-app-bar
-      id="appBar"
-      class="pt-2 px-6 font-18 app-bar"
-      app
-      scroll-behavior="hide"
-      scroll-threshold="191"
-      :color="'#353535' || '#ffffff17' || primaryBackground"
-      :elevation="1"
-      style="box-shadow: 0 2px 40px -2px #0003 !important"
-    >
-      <div
-        class="app-bar-title magnetic-button"
-        style="height: 100%"
-        :style="
-          $vuetify.display.smAndDown ? 'width: 50%; padding: 0' : 'width: 18%'
-        "
-        @mousemove="handleMouseMove(-1)"
-        @mouseleave="handleMouseLeave(-1)"
-        @mouseenter="handleMouseEnter"
-        @click="refreshPage"
-      >
-        <v-icon icon="mdi-copyright" class="pt-0 mr-1" size="small" />
-        <p id="appbar-title-text">
-          {{ appBarTitle }}
-        </p>
-      </div>
-      <div
-        v-if="$vuetify.display.smAndDown"
-        style="display: flex; justify-content: end; width: 50%"
-      >
-        <v-app-bar-nav-icon
-          :color="gray"
-          class="text-white"
-          flat
-          :ripple="false"
-          width="85"
-          height="40"
-          :border="0"
-          style="border-radius: 7px"
-          @click.stop="toggleNavigationDrawer"
-        >
-          <v-icon icon="mdi-checkbox-blank-circle" size="7" class="mr-2" /> menu
-        </v-app-bar-nav-icon>
-      </div>
+    <div class="scroll-progress" :style="{ transform: `scaleX(${scrollProgress})` }" />
 
-      <div
-        v-if="$vuetify.display.mdAndUp"
-        class="tabs-container text-mysecondary"
-      >
-        <div
+    <header
+      id="appBar"
+      class="site-nav"
+      :class="{ 'site-nav--scrolled': isScrolled, 'site-nav--open': toggle }"
+    >
+      <div class="site-nav__inner">
+        <button
+          class="nav-mark my-cursor-hover"
+          type="button"
+          aria-label="Scroll to top"
+          @click="scrollToTop"
+        >
+          <span class="nav-mark__full">Jawad&nbsp;Haider</span>
+          <span class="nav-mark__short">JH</span>
+        </button>
+
+        <nav v-if="$vuetify.display.mdAndUp" class="nav-links" aria-label="Primary">
+          <a
+            v-for="(tab, index) in tabs"
+            :key="index"
+            href="#"
+            class="nav-link my-cursor-hover"
+            :class="{ 'nav-link--active': tab.isActive }"
+            @click.prevent="scrollToSection(tab)"
+          >
+            {{ tab.title }}
+          </a>
+        </nav>
+
+        <button
+          v-else
+          class="nav-toggle my-cursor-hover"
+          type="button"
+          :aria-expanded="toggle"
+          aria-label="Toggle navigation menu"
+          @click="toggleNavigationDrawer"
+        >
+          <span class="nav-toggle__bar" />
+          <span class="nav-toggle__bar" />
+        </button>
+      </div>
+    </header>
+
+    <div
+      v-if="$vuetify.display.smAndDown"
+      ref="overlay"
+      class="nav-overlay"
+      :class="{ 'nav-overlay--active': toggle }"
+      :aria-hidden="!toggle"
+    >
+      <div class="nav-overlay__list">
+        <a
           v-for="(tab, index) in tabs"
           :key="index"
-          class="px-2 magnetic-button"
-          :class="{ 'button-selected': tab.isActive }"
-          style="border-radius: 5px; transition: transform 0.2s"
-          @mousemove="handleMouseMove(index)"
-          @mouseleave="handleMouseLeave(index)"
-          @click="scrollToSection(tab)"
+          href="#"
+          class="nav-overlay__link"
+          :class="{ 'nav-overlay__link--active': tab.isActive }"
+          @click.prevent="scrollToSection(tab)"
         >
-          <v-btn
-            v-if="index + 1 === tabs.length"
-            variant="tonal"
-            rounded="lg"
-            class="contactme-btn text-none"
-          >
-            Contact Me
-          </v-btn>
-          <p v-else class="button-text">
-            {{ tab.title }}
-          </p>
-        </div>
+          <span class="nav-overlay__index">{{ String(index + 1).padStart(2, '0') }}</span>
+          <span class="nav-overlay__label">{{ tab.title }}</span>
+        </a>
       </div>
-    </v-app-bar>
+      <div class="nav-overlay__footer">
+        <span class="nav-overlay__meta">Find me online</span>
+        <social-component icon-size="default" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import SocialComponent from "./SocialComponent.vue";
-import { gsap } from "gsap";
-import TextPlugin from "gsap/TextPlugin";
-
-gsap.registerPlugin(TextPlugin);
+import SocialComponent from './SocialComponent.vue';
+import { gsap } from '@/plugins/gsap';
+import { prefersReducedMotion } from '@/utils/motion';
 
 export default {
   components: {
@@ -160,301 +92,293 @@ export default {
   data: () => {
     return {
       toggle: false,
-      activeIndex: -1,
-      appBarTitle: "Code by Jawad",
-      showNavigationList: false,
+      isScrolled: false,
+      scrollProgress: 0,
     };
   },
   watch: {
     toggle(newValue) {
-      this.$emit("toggleNavigationDrawer", newValue);
-    },
-  },
-  computed: {
-    activeTab: {
-      get() {
-        return this.tabs.findIndex((tab) => tab.isActive);
-      },
-      set() {},
+      this.$emit('toggleNavigationDrawer', newValue);
+      this.animateOverlay(newValue);
     },
   },
   methods: {
     toggleNavigationDrawer() {
       this.toggle = !this.toggle;
-      this.showNavigationList = !this.showNavigationList;
     },
     scrollToSection(btn) {
       this.toggle = false;
-      this.showNavigationList = false;
-      const component = document.getElementById(btn?.componentId || "appBarId");
-      const scrollPosition =
-        component.getBoundingClientRect().top + window.scrollY - 35;
-      window.scrollTo({
-        top: scrollPosition,
-        behavior: "smooth",
-      });
+      if (!btn?.componentId) {
+        this.scrollToTop();
+        return;
+      }
+      const component = document.getElementById(btn.componentId);
+      if (!component) return;
+      const scrollPosition = component.getBoundingClientRect().top + window.scrollY - 35;
+      window.scrollTo({ top: scrollPosition, behavior: 'smooth' });
     },
-    handleMouseMove() {
-      const x = event.clientX;
-      const y = event.clientY;
+    scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+    animateOverlay(open) {
+      const el = this.$refs.overlay;
+      if (!el) return;
+      gsap.killTweensOf(el);
+      document.documentElement.style.overflow = open ? 'hidden' : '';
 
-      const rect = event.target.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const deltaX = x - centerX;
-      const deltaY = y - centerY;
+      if (prefersReducedMotion()) {
+        gsap.set(el, { clipPath: open ? 'inset(0 0 0% 0)' : 'inset(0 0 100% 0)' });
+        return;
+      }
 
-      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-
-      if (distance < 500) {
-        event.target.style.transform = `translate(${deltaX / 10}px, ${
-          deltaY / 10
-        }px)`;
+      if (open) {
+        gsap.fromTo(
+          el,
+          { clipPath: 'inset(0 0 100% 0)' },
+          { clipPath: 'inset(0 0 0% 0)', duration: 0.7, ease: 'expo.out' }
+        );
+        gsap.fromTo(
+          '.nav-overlay__link',
+          { opacity: 0, y: 24 },
+          { opacity: 1, y: 0, duration: 0.6, delay: 0.2, ease: 'power2.out', stagger: 0.06 }
+        );
       } else {
-        event.target.style.transform = "translate(0, 0)";
+        gsap.to(el, { clipPath: 'inset(0 0 100% 0)', duration: 0.5, ease: 'power3.inOut' });
       }
     },
-    handleMouseLeave() {
-      const button = event.target;
+    handleScroll() {
+      this.isScrolled = window.scrollY > 24;
 
-      button.style.animation = "bounceBack 0.5s ease";
-      setTimeout(() => {
-        button.style.animation = "";
-        button.style.transform = "translate(0, 0)";
-      }, 500);
-
-      gsap.to("#appbar-title-text", {
-        duration: 0.5,
-        text: "Code by Jawad",
-        ease: "none",
-        delay: 0,
-      });
-    },
-    handleMouseEnter() {
-      gsap.to("#appbar-title-text", {
-        duration: 0.5,
-        text: "JAWAD HAIDER",
-        ease: "none",
-        delay: 0,
-      });
-    },
-    refreshPage() {
-      location.reload();
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - doc.clientHeight;
+      this.scrollProgress = max > 0 ? Math.min(window.scrollY / max, 1) : 0;
     },
   },
   mounted() {
-    const appbarElement = document.getElementById("appBar");
-    appbarElement.style.opacity = "0";
+    window.addEventListener('scroll', this.handleScroll, { passive: true });
+    this.handleScroll();
 
-    const appBarTitleEl = gsap.fromTo(
-      ".app-bar-title",
-      {
-        opacity: 0,
-        y: 40,
-      },
-      {
-        y: 0,
-        duration: 1.2,
-        opacity: 1,
-        paused: true,
-        delay: 2.2,
-        ease: "bounce.out",
-      }
-    );
-
-    setTimeout(() => {
-      appbarElement.style.animation = "bounceIn 1.8s";
-      appbarElement.style.opacity = "1";
-      appBarTitleEl.play();
-    }, 2000);
+    if (!prefersReducedMotion()) {
+      gsap.fromTo(
+        '#appBar',
+        { opacity: 0, y: -24 },
+        { opacity: 1, y: 0, duration: 0.9, delay: 0.3, ease: 'power2.out' }
+      );
+    }
+  },
+  beforeUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
+    document.documentElement.style.overflow = '';
   },
 };
 </script>
 
 <style lang="scss">
-.app-bar {
-  height: 80px;
-  width: 85% !important;
-  left: 7% !important;
-  // position: sticky !important;
-  box-shadow: 0 2px 40px #0003 !important;
-  border-radius: 20px !important;
-}
-
-.app-bar-title {
-  display: flex;
-  align-items: center;
-  width: 50%;
-  color: #1f1d1d;
-  padding-left: 1.7rem;
-
-  p {
-    font-weight: bold;
-  }
-}
-
-.stripe {
-  width: 90%;
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 2px;
-  display: block;
-  background-color: #ffffff39;
-  margin-block: 20px;
+  background: $gradient-accent;
+  transform-origin: left center;
+  transform: scaleX(0);
+  z-index: 2600;
+  pointer-events: none;
 }
 
-.navigation-list {
-  animation: slideInRight 0.5s ease-in forwards;
-
-  .v-list-item__content {
-    padding-block: 10px;
-
-    .v-list-item-title {
-      font-size: 1.5rem;
-      padding-block: 10px;
-      height: 40px;
-      text-transform: uppercase !important;
-    }
-  }
-
-  .v-list-item__append {
-    margin-right: 15px;
-  }
+.site-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2400;
+  padding-block: $space-5;
+  transition: padding $dur-normal $ease-out, background-color $dur-normal $ease-out,
+    border-color $dur-normal $ease-out, backdrop-filter $dur-normal $ease-out;
+  border-bottom: 1px solid transparent;
 }
 
-.magnetic-button {
-  transition: color 0.2s;
-  height: 100%;
+.site-nav--scrolled {
+  padding-block: $space-3;
+  background-color: rgba(23, 24, 26, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: $border-hairline-faint;
+}
+
+.site-nav__inner {
+  max-width: $container-wide;
+  margin-inline: auto;
+  padding-inline: $space-6;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 
-  .button-text {
-    padding: 20px 10px;
+  @media (max-width: 600px) {
+    padding-inline: $space-4;
+  }
+}
+
+.nav-mark {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: $font-mono;
+  font-size: $fs-caption;
+  letter-spacing: $ls-wide;
+  text-transform: uppercase;
+  color: $color-white;
+  cursor: inherit;
+}
+
+.nav-mark__short {
+  display: none;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: $space-7;
+}
+
+.nav-link {
+  position: relative;
+  font-family: $font-mono;
+  font-size: $fs-caption;
+  letter-spacing: $ls-wide;
+  text-transform: uppercase;
+  color: $color-text-muted;
+  text-decoration: none;
+  padding-block: $space-1;
+  transition: color $dur-fast $ease-out;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 1px;
+    background: $color-accent;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform $dur-normal $ease-out;
   }
 
   &:hover {
-    color: #adeef1;
-    font-weight: bold;
+    color: $color-white;
+
+    &::after {
+      transform: scaleX(1);
+    }
   }
 }
 
-.button-selected {
-  font-weight: bold;
+.nav-link--active {
+  color: $color-accent;
 
-  p {
-    color: #ec7e1e !important;
-    font-weight: bolder;
-    text-shadow: 1px 1px 6px black;
+  &::after {
+    transform: scaleX(1);
   }
 }
 
-.tabs-container {
-  width: 100%;
-  color: #211d1d;
-  position: relative;
-  overflow: hidden;
+.nav-toggle {
+  background: none;
+  border: none;
+  padding: $space-2;
   display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
-  height: 100%;
+  flex-direction: column;
+  gap: 5px;
+  cursor: inherit;
 }
 
-.contactme-btn {
-  background: linear-gradient(to right, #ff7900, #f3ae72) !important;
-  box-shadow: 0 1px 8px black;
+.nav-toggle__bar {
+  width: 22px;
+  height: 1px;
+  background: $color-white;
+  transition: transform $dur-fast $ease-out, opacity $dur-fast $ease-out;
 }
 
-.contactme-btn:hover {
-  background: linear-gradient(to left, #ec7e1e, #ec7e1e) !important;
+.site-nav--open .nav-toggle__bar:first-child {
+  transform: translateY(3px) rotate(45deg);
 }
 
-.contactme-btn > .v-btn__content {
-  color: black;
-  font-weight: bold;
+.site-nav--open .nav-toggle__bar:last-child {
+  transform: translateY(-3px) rotate(-45deg);
 }
 
-.dot {
-  width: 8px;
-  height: 8px;
-  background-color: white;
-  /* Adjust the color as needed */
-  border-radius: 100%;
-  bottom: 5px;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 1;
-  transition: opacity 0.2s;
+.nav-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2300;
+  background: $color-bg-darkest;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: $space-10 $space-5 $space-7;
+  clip-path: inset(0 0 100% 0);
+  pointer-events: none;
 }
 
-@keyframes bounceBack {
-  0%,
-  20%,
-  50%,
-  80%,
-  100% {
-    transform: translateX(0);
-  }
-
-  40% {
-    transform: translateX(-5px);
-  }
-
-  60% {
-    transform: translateX(5px);
-  }
+.nav-overlay--active {
+  pointer-events: auto;
 }
 
-@keyframes bounceIn {
-  0% {
-    transform: translateY(-200px);
-    animation-timing-function: ease-in;
-    opacity: 0;
-  }
-
-  38% {
-    transform: translateY(50px);
-    animation-timing-function: ease-out;
-    opacity: 1;
-  }
-
-  55% {
-    transform: translateY(-30px);
-    animation-timing-function: ease-in;
-  }
-
-  72% {
-    transform: translateY(25px);
-    animation-timing-function: ease-out;
-  }
-
-  81% {
-    transform: translateY(-15px);
-    animation-timing-function: ease-in;
-  }
-
-  90% {
-    transform: translateY(10px);
-    animation-timing-function: ease-out;
-  }
-
-  95% {
-    transform: translateY(-5px);
-    animation-timing-function: ease-in;
-  }
-
-  100% {
-    transform: translateY(0);
-    animation-timing-function: ease-out;
-  }
+.nav-overlay__list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
 }
 
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(700px);
+.nav-overlay__link {
+  display: flex;
+  align-items: baseline;
+  gap: $space-4;
+  text-decoration: none;
+  padding-block: $space-3;
+  border-bottom: $border-hairline-faint;
+}
+
+.nav-overlay__index {
+  font-family: $font-mono;
+  font-size: $fs-caption;
+  color: $color-accent;
+}
+
+.nav-overlay__label {
+  font-family: $font-display;
+  font-size: clamp(2rem, 6vw + 1rem, 3rem);
+  font-weight: $fw-medium;
+  color: $color-white;
+  letter-spacing: $ls-tight;
+}
+
+.nav-overlay__link--active .nav-overlay__label {
+  color: $color-accent;
+}
+
+.nav-overlay__footer {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.nav-overlay__meta {
+  font-family: $font-mono;
+  font-size: $fs-micro;
+  letter-spacing: $ls-wide;
+  text-transform: uppercase;
+  color: $color-gray;
+}
+
+@media (max-width: 380px) {
+  .nav-mark__full {
+    display: none;
   }
 
-  to {
-    opacity: 1;
-    transform: translateX(0);
+  .nav-mark__short {
+    display: inline;
   }
 }
 </style>

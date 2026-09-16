@@ -5,8 +5,7 @@ import 'vuetify/styles';
 import vuetify from './plugins/vuetify';
 import VueGtag from 'vue-gtag';
 
-import ToastPlugin from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-bootstrap.css';
+import toastPlugin from './plugins/toast';
 
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -19,10 +18,7 @@ const app = createApp(App, {
 
 app.mixin(CommonMixin);
 app.use(vuetify);
-app.use(ToastPlugin, {
-  position: 'top',
-  duration: 2000,
-});
+app.use(toastPlugin);
 
 app.config.globalProperties.$helloWorld = 'Hello World';
 

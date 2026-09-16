@@ -1,8 +1,9 @@
 <template>
-  <div :style="{ width: '100%', backgroundColor: '#222' }">
+  <div style="width: 100%">
     <information-section id="informationSectionId" />
     <about-section id="aboutSectionId" />
     <project-section id="projectSectionId" />
+    <testimonials-section id="testimonialsSectionId" />
     <footer-section id="footerSectionId" />
     <custom-snackbar
       v-if="snackbarVisible"
@@ -16,6 +17,7 @@
 import InformationSection from './MainPageSections/InformationSection.vue';
 import AboutSection from './MainPageSections/AboutSection.vue';
 import ProjectSection from './MainPageSections/ProjectSection.vue';
+import TestimonialsSection from './MainPageSections/TestimonialsSection.vue';
 import FooterSection from '@/Pages/MainPageSections/FooterSection.vue';
 import CustomSnackbar from '@/components/CustomSnackbar.vue';
 
@@ -24,6 +26,7 @@ export default {
     InformationSection,
     AboutSection,
     ProjectSection,
+    TestimonialsSection,
     FooterSection,
     CustomSnackbar,
   },
@@ -84,29 +87,3 @@ export default {
   },
 };
 </script>
-
-<style>
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-700px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes fadeUp {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-</style>
