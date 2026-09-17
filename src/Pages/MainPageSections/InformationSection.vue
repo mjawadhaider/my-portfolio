@@ -94,7 +94,7 @@ import { fetchDetails, fetchExperience, fetchSkills } from '@/utils/fetchData';
 import { prefersReducedMotion } from '@/utils/motion';
 
 const ROLE_LINE = 'Software Engineer';
-const STATEMENT = 'I help teams design and ship reliable web applications, end to end.';
+const STATEMENT = 'I build solutions that hold up, not just ones that ship. Thoughtful engineering, not just working code.';
 
 export default {
   components: {
@@ -272,11 +272,33 @@ export default {
   font-family: $font-body;
   font-size: $fs-body;
   font-weight: $fw-medium;
-  color: $color-white;
+  // !important: this is a <button>, and Vuetify's own reset stylesheet
+  // carries a same-specificity `[type=button] { color: inherit }` rule
+  // that (in this app's build) is injected after our component styles —
+  // on an equal-specificity tie it wins, silently falling through to
+  // `inherit` instead of this color. See FeedbackForm.vue's .hero__cta
+  // override for the full explanation.
+  color: $color-white !important;
   text-decoration: none;
-  border-bottom: 1px solid rgba(242, 240, 236, 0.25);
+  border-bottom: 1px solid rgba(var(--color-white-rgb), 0.25);
   cursor: inherit;
   transition: border-color $dur-fast $ease-out, color $dur-fast $ease-out;
+}
+
+// App.vue's global `* { color: $color-white }` matches these buttons'
+// label/arrow <span>s directly (a universal-selector match always wins
+// over plain inheritance, regardless of specificity elsewhere), so
+// without this the spans ignore whatever color the button itself
+// resolved to and always show the theme's plain white/ink text color
+// instead. Harmless here (both colors are theme-reactive and the hero
+// background flips with them), but this same button+span pattern is
+// reused by FeedbackForm.vue's Send/Cancel buttons inside the footer's
+// permanently-dark tray — there the span's theme-reactive color goes
+// invisible against that fixed-dark background once the site is in
+// light mode. `inherit` (not `!important`) is enough: specificity
+// 0-0-1-1 already beats the universal selector's 0-0-0-0.
+.hero__cta > span {
+  color: inherit;
 }
 
 .hero__cta-arrow {
@@ -293,7 +315,7 @@ export default {
 
 .hero__cta--primary {
   position: relative;
-  color: $color-accent;
+  color: $color-accent !important;
   border-color: transparent;
 }
 

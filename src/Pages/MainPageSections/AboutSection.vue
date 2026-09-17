@@ -26,7 +26,20 @@
                 <li v-for="(highlight, hIndex) in item.highlights" :key="hIndex">
                   {{ highlight }}
                 </li>
+                <template v-if="expandedRows[index]">
+                  <li v-for="(highlight, hIndex) in item.moreHighlights" :key="`more-${hIndex}`">
+                    {{ highlight }}
+                  </li>
+                </template>
               </ul>
+              <button
+                v-if="item.moreHighlights?.length"
+                type="button"
+                class="timeline-row__toggle my-cursor-hover"
+                @click="toggleRow(index)"
+              >
+                {{ expandedRows[index] ? 'View less' : `View ${item.moreHighlights.length} more` }}
+              </button>
             </div>
           </div>
         </template>
@@ -77,9 +90,13 @@ export default {
     return {
       experience: [],
       education: [],
+      expandedRows: {},
     };
   },
   methods: {
+    toggleRow(index) {
+      this.expandedRows[index] = !this.expandedRows[index];
+    },
     addScrollAnimation() {
       if (prefersReducedMotion()) return;
 
@@ -227,6 +244,29 @@ export default {
 
   li {
     margin-bottom: $space-1;
+  }
+}
+
+.timeline-row__toggle {
+  display: inline-block;
+  margin-top: $space-3;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: $font-mono;
+  font-size: $fs-micro;
+  letter-spacing: $ls-wide;
+  text-transform: uppercase;
+  // !important: needed to beat Vuetify's `[type=button] { color: inherit }`
+  // reset on this equal-specificity single-class selector — see
+  // FeedbackForm.vue's .hero__cta comment for the full explanation.
+  color: $color-accent !important;
+  border-bottom: 1px solid rgba(var(--color-white-rgb), 0.25);
+  cursor: inherit;
+  transition: border-color $dur-fast $ease-out;
+
+  &:hover {
+    border-color: $color-accent;
   }
 }
 

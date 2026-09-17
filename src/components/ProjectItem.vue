@@ -164,12 +164,16 @@ export default {
   border: none;
   font-size: 1.75rem;
   line-height: 1;
-  color: $color-gray;
+  // !important: needed to beat Vuetify's `[type=button] { color: inherit }`
+  // reset on this equal-specificity single-class selector — see
+  // FeedbackForm.vue's .hero__cta comment for the full explanation.
+  color: $color-gray !important;
   cursor: inherit;
   transition: color $dur-fast $ease-out, transform $dur-fast $ease-out;
+  padding: 4px 6px;
 
   &:hover {
-    color: $color-white;
+    color: $color-white !important;
     transform: rotate(90deg);
   }
 }
@@ -249,7 +253,7 @@ export default {
   flex-wrap: wrap;
   gap: $space-2;
   padding: $space-3 $space-4;
-  background: linear-gradient(135deg, rgba(205, 168, 121, 0.1), rgba(205, 168, 121, 0.02));
+  background: linear-gradient(135deg, rgba(var(--color-accent-rgb), 0.1), rgba(var(--color-accent-rgb), 0.02));
   border: $border-accent;
   color: $color-white;
 }
@@ -290,7 +294,7 @@ export default {
   a {
     color: $color-accent;
     text-decoration: none;
-    border-bottom: 1px solid rgba(205, 168, 121, 0.4);
+    border-bottom: 1px solid rgba(var(--color-accent-rgb), 0.4);
   }
 
   a:hover {

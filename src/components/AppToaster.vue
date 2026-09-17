@@ -120,12 +120,15 @@ export default {
   border: none;
   font-size: 1.125rem;
   line-height: 1;
-  color: $color-gray;
+  // !important: needed to beat Vuetify's `[type=button] { color: inherit }`
+  // reset on this equal-specificity single-class selector — see
+  // FeedbackForm.vue's .hero__cta comment for the full explanation.
+  color: $color-gray !important;
   cursor: inherit;
   transition: color $dur-fast $ease-out, transform $dur-fast $ease-out;
 
   &:hover {
-    color: $color-white;
+    color: $color-white !important;
     transform: rotate(90deg);
   }
 }

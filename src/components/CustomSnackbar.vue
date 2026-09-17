@@ -78,14 +78,25 @@ export default {
   border-radius: $radius-circle;
   border: $border-hairline;
   background-color: $color-bg-darkest;
-  color: $color-white;
+  // !important: needed to beat Vuetify's `[type=button] { color: inherit }`
+  // reset on this equal-specificity single-class selector — see
+  // FeedbackForm.vue's .hero__cta comment for the full explanation.
+  color: $color-white !important;
   cursor: inherit;
   transition: border-color $dur-fast $ease-out, color $dur-fast $ease-out,
     transform $dur-fast $ease-out;
 
+  // The arrow is a <v-icon> with no color of its own, which (like every
+  // element) is directly caught by App.vue's global `* { color:
+  // $color-white }` rather than actually inheriting from this button —
+  // see the matching note in SocialComponent.vue for the full mechanism.
+  .v-icon {
+    color: inherit !important;
+  }
+
   &:hover {
     border-color: $color-accent;
-    color: $color-accent;
+    color: $color-accent !important;
     transform: translateY(-2px);
   }
 }

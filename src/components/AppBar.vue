@@ -18,30 +18,41 @@
           <span class="nav-mark__short">JH</span>
         </button>
 
-        <nav v-if="$vuetify.display.mdAndUp" class="nav-links" aria-label="Primary">
-          <a
-            v-for="(tab, index) in tabs"
-            :key="index"
-            href="#"
-            class="nav-link my-cursor-hover"
-            :class="{ 'nav-link--active': tab.isActive }"
-            @click.prevent="scrollToSection(tab)"
-          >
-            {{ tab.title }}
-          </a>
-        </nav>
+        <div class="site-nav__actions">
+          <nav v-if="$vuetify.display.mdAndUp" class="nav-links" aria-label="Primary">
+            <a
+              v-for="(tab, index) in tabs"
+              :key="index"
+              href="#"
+              class="nav-link my-cursor-hover"
+              :class="{ 'nav-link--active': tab.isActive }"
+              @click.prevent="scrollToSection(tab)"
+            >
+              {{ tab.title }}
+            </a>
+          </nav>
 
-        <button
-          v-else
-          class="nav-toggle my-cursor-hover"
-          type="button"
-          :aria-expanded="toggle"
-          aria-label="Toggle navigation menu"
-          @click="toggleNavigationDrawer"
-        >
-          <span class="nav-toggle__bar" />
-          <span class="nav-toggle__bar" />
-        </button>
+          <button
+            type="button"
+            class="theme-toggle my-cursor-hover"
+            :aria-label="isLightTheme ? 'Switch to dark mode' : 'Switch to light mode'"
+            @click="onToggleTheme"
+          >
+            <v-icon size="18">{{ isLightTheme ? 'mdi-weather-night' : 'mdi-white-balance-sunny' }}</v-icon>
+          </button>
+
+          <button
+            v-if="!$vuetify.display.mdAndUp"
+            class="nav-toggle my-cursor-hover"
+            type="button"
+            :aria-expanded="toggle"
+            aria-label="Toggle navigation menu"
+            @click="toggleNavigationDrawer"
+          >
+            <span class="nav-toggle__bar" />
+            <span class="nav-toggle__bar" />
+          </button>
+        </div>
       </div>
     </header>
 
@@ -77,6 +88,7 @@
 import SocialComponent from './SocialComponent.vue';
 import { gsap } from '@/plugins/gsap';
 import { prefersReducedMotion } from '@/utils/motion';
+import { themeState, toggleTheme } from '@/utils/theme';
 
 export default {
   components: {
@@ -94,7 +106,13 @@ export default {
       toggle: false,
       isScrolled: false,
       scrollProgress: 0,
+      themeState,
     };
+  },
+  computed: {
+    isLightTheme() {
+      return this.themeState.theme === 'light';
+    },
   },
   watch: {
     toggle(newValue) {
@@ -103,6 +121,9 @@ export default {
     },
   },
   methods: {
+    onToggleTheme() {
+      toggleTheme();
+    },
     toggleNavigationDrawer() {
       this.toggle = !this.toggle;
     },
@@ -201,7 +222,7 @@ export default {
 
 .site-nav--scrolled {
   padding-block: $space-3;
-  background-color: rgba(23, 24, 26, 0.72);
+  background-color: rgba(var(--color-bg-darkest-rgb), 0.72);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: $border-hairline-faint;
@@ -228,12 +249,49 @@ export default {
   font-size: $fs-caption;
   letter-spacing: $ls-wide;
   text-transform: uppercase;
-  color: $color-white;
+  // !important: needed to beat Vuetify's `[type=button] { color: inherit }`
+  // reset on this equal-specificity single-class selector — see
+  // FeedbackForm.vue's .hero__cta comment for the full explanation.
+  color: $color-white !important;
   cursor: inherit;
 }
 
 .nav-mark__short {
   display: none;
+}
+
+.site-nav__actions {
+  display: flex;
+  align-items: center;
+  gap: $space-6;
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: $space-2;
+  margin: -$space-2;
+  // !important: needed to beat Vuetify's `[type=button] { color: inherit }`
+  // reset on this equal-specificity single-class selector — see
+  // FeedbackForm.vue's .hero__cta comment for the full explanation.
+  color: $color-text-muted !important;
+  cursor: inherit;
+  transition: color $dur-fast $ease-out;
+
+  // The icon is a <v-icon> with no color of its own, which (like every
+  // element) is directly caught by App.vue's global `* { color:
+  // $color-white }` rather than actually inheriting from this button —
+  // see the matching note in SocialComponent.vue for the full mechanism.
+  .v-icon {
+    color: inherit !important;
+  }
+
+  &:hover {
+    color: $color-accent !important;
+  }
 }
 
 .nav-links {
