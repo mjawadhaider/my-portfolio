@@ -280,7 +280,7 @@ export default {
 .project-feature__link {
   font-weight: $fw-medium;
   color: $color-accent;
-  border-bottom: 1px solid rgba(205, 168, 121, 0.5);
+  border-bottom: 1px solid rgba(var(--color-accent-rgb), 0.5);
   padding-bottom: 2px;
   transition: border-color $dur-fast $ease-out;
 }

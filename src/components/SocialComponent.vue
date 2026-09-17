@@ -65,11 +65,35 @@ export default {
 }
 
 .social-btn {
-  color: $color-gray;
+  // !important: v-btn renders an actual <button type="button">, and
+  // Vuetify's own reset stylesheet has a same-specificity
+  // `[type=button] { color: inherit }` rule — see FeedbackForm.vue's
+  // .hero__cta comment for the full explanation of why a plain class
+  // selector isn't enough to win that tie.
+  color: $color-gray !important;
   transition: color $dur-fast $ease-out;
 
+  // The icon glyph is a separate element v-btn renders internally from
+  // its `icon` prop, wrapped in v-btn's own <span class="v-btn__content">
+  // — two levels removed from .social-btn, and neither reachable by this
+  // component's own scoped CSS without :deep(). Left unstyled, both are
+  // caught only by App.vue's global `* { color: $color-white }` (the
+  // universal selector always wins over an ancestor's color, since
+  // inheritance never kicks in for a property every element already has
+  // an explicit value for) — and because that wrapper span sits in
+  // between, even `color: inherit` here would just pick up the wrapper's
+  // own (wrong) color rather than .social-btn's, so the value is
+  // repeated explicitly instead.
+  :deep(.v-icon) {
+    color: $color-gray !important;
+  }
+
   &:hover {
-    color: $color-accent;
+    color: $color-accent !important;
+
+    :deep(.v-icon) {
+      color: $color-accent !important;
+    }
   }
 }
 </style>

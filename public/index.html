@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script>
+      // Anti-flash: sets data-theme before any CSS/JS loads, so a
+      // returning light-mode visitor doesn't briefly see the dark
+      // default. Keep the 'portfolio-theme' key in sync with
+      // src/utils/theme.js, which owns the toggle itself.
+      (function () {
+        try {
+          if (window.localStorage.getItem('portfolio-theme') === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+          }
+        } catch (e) {}
+      })();
+    </script>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta

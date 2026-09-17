@@ -21,13 +21,14 @@
         @mouseleave="hovered = null"
       >
         <defs>
-          <!-- Mirrors $color-accent / $color-accent-dark from _variables.scss —
-               SVG can't read SCSS variables, same reason CommonMixin.js keeps
-               its own JS copy of these tokens. Keep both in sync. -->
+          <!-- style="stop-color: var(...)" (not the stop-color attribute)
+               so this tracks $color-accent-light/$color-accent/$color-accent-dark
+               live across the light/dark theme toggle — a CSS custom
+               property resolves fine here, unlike an SCSS variable. -->
           <radialGradient id="skillsNetworkCoreFill" cx="35%" cy="30%" r="75%">
-            <stop offset="0%" stop-color="#e4c79a" />
-            <stop offset="55%" stop-color="#cda879" />
-            <stop offset="100%" stop-color="#b8895a" />
+            <stop offset="0%" style="stop-color: var(--color-accent-light)" />
+            <stop offset="55%" style="stop-color: var(--color-accent)" />
+            <stop offset="100%" style="stop-color: var(--color-accent-dark)" />
           </radialGradient>
         </defs>
 
@@ -232,12 +233,12 @@ export default {
 }
 
 .skills-network__edge {
-  stroke: rgba(242, 240, 236, 0.16);
+  stroke: rgba(var(--color-white-rgb), 0.16);
   transition: stroke $dur-fast $ease-out, opacity $dur-fast $ease-out;
 }
 
 .skills-network__edge--active {
-  stroke: rgba(205, 168, 121, 0.65);
+  stroke: rgba(var(--color-accent-rgb), 0.65);
 }
 
 .skills-network__edge--dim {
@@ -256,7 +257,7 @@ export default {
 
 .skills-network__dot {
   fill: $color-bg-elevated;
-  stroke: rgba(242, 240, 236, 0.25);
+  stroke: rgba(var(--color-white-rgb), 0.25);
   stroke-width: 0.6;
   transform-box: fill-box;
   transform-origin: center;
@@ -277,7 +278,7 @@ export default {
   stroke: $color-accent;
   stroke-width: 0.8;
   transform: scale(1.14);
-  filter: drop-shadow(0 0 6px rgba(205, 168, 121, 0.45));
+  filter: drop-shadow(0 0 6px rgba(var(--color-accent-rgb), 0.45));
 }
 
 .skills-network__node:focus-visible .skills-network__dot {
@@ -335,6 +336,10 @@ export default {
   gap: $space-3;
 }
 
+// These are <button type="button"> elements, and all three color values
+// below need !important to beat Vuetify's own `[type=button] { color:
+// inherit }` reset, which ties on specificity with a plain class selector
+// — see FeedbackForm.vue's .hero__cta comment for the full explanation.
 .skills-chip {
   background: none;
   border: $border-hairline-faint;
@@ -342,19 +347,19 @@ export default {
   padding: $space-2 $space-4;
   font-family: $font-mono;
   font-size: $fs-caption;
-  color: $color-text-muted;
+  color: $color-text-muted !important;
   cursor: inherit;
   transition: border-color $dur-fast $ease-out, color $dur-fast $ease-out;
 }
 
 .skills-chip--core {
-  color: $color-white;
+  color: $color-white !important;
   font-weight: $fw-medium;
-  border-color: rgba(205, 168, 121, 0.4);
+  border-color: rgba(var(--color-accent-rgb), 0.4);
 }
 
 .skills-chip--selected {
-  color: $color-accent;
+  color: $color-accent !important;
   border-color: $color-accent;
 }
 
@@ -377,12 +382,15 @@ export default {
   border: none;
   font-size: 1.375rem;
   line-height: 1;
-  color: $color-gray;
+  // !important: needed to beat Vuetify's `[type=button] { color: inherit }`
+  // reset on this equal-specificity single-class selector — see
+  // FeedbackForm.vue's .hero__cta comment for the full explanation.
+  color: $color-gray !important;
   cursor: inherit;
   transition: color $dur-fast $ease-out, transform $dur-fast $ease-out;
 
   &:hover {
-    color: $color-white;
+    color: $color-white !important;
     transform: rotate(90deg);
   }
 }

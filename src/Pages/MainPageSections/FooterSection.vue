@@ -133,16 +133,24 @@ export default {
 // background behind it (a deliberate, one-off exception to the "flat,
 // pill-buttons-only radius" rule — used here because it's the one place
 // on the site that benefits from looking like a separate surface), a
-// deepened flat base (darker than $color-bg-darkest) instead of the
-// same accent-glow treatment every other section uses, and an upward
-// shadow that visually separates it from whatever sits above it.
+// deepened flat base instead of the same accent-glow treatment every
+// other section uses, and an upward shadow that visually separates it
+// from whatever sits above it.
+//
+// Deliberately excluded from the light/dark theme toggle: this tray (and
+// FeedbackForm.vue, which only ever renders inside it) uses the fixed
+// $footer-* tokens from _variables.scss instead of the shared $color-*
+// ones, so it stays exactly this dark regardless of site theme — a
+// permanent grounding surface, the same pattern many sites use for a
+// dark footer band. That's also why its palette is plain literals rather
+// than CSS custom properties: it never needs to change at runtime.
 .contact {
   // A single quiet glint in one corner (not the broad wash every other
   // section has) over a deepened flat base — background layers always
   // paint behind content, so this needs no pseudo-element/z-index.
   background:
     radial-gradient(ellipse 32% 40% at 88% 0%, rgba(205, 168, 121, 0.06), transparent 60%),
-    darken($color-bg-darkest, 4%);
+    $footer-bg;
   border-radius: 28px 28px 0 0;
   box-shadow: 0 -48px 64px -40px rgba(0, 0, 0, 0.65);
   padding: clamp(96px, 14vh, 180px) clamp(24px, 6vw, 80px) $space-7;
@@ -172,12 +180,12 @@ export default {
   font-weight: $fw-medium;
   letter-spacing: $ls-tight;
   line-height: 1.05;
-  color: $color-white;
+  color: $footer-text;
   transition: color $dur-normal $ease-out;
 }
 
 .contact__cta:hover .contact__heading {
-  color: $color-accent;
+  color: $footer-accent;
 }
 
 .contact__row {
@@ -197,15 +205,19 @@ export default {
   padding: 0 0 $space-2;
   font-family: $font-mono;
   font-size: $fs-body;
-  color: $color-white;
+  // !important: the phone number is a <button>, and Vuetify's own reset
+  // stylesheet has a same-specificity `[type=button] { color: inherit }`
+  // rule — see the note on .hero__cta in FeedbackForm.vue for the full
+  // explanation of why a plain class selector isn't enough here.
+  color: $footer-text !important;
   text-decoration: none;
   border-bottom: 1px solid rgba(242, 240, 236, 0.25);
   cursor: inherit;
   transition: border-color $dur-fast $ease-out, color $dur-fast $ease-out;
 
   &:hover {
-    color: $color-accent;
-    border-color: $color-accent;
+    color: $footer-accent !important;
+    border-color: $footer-accent;
   }
 }
 
@@ -217,7 +229,7 @@ export default {
   max-width: $container-max;
   margin: clamp(64px, 10vh, 120px) auto 0;
   padding-top: $space-5;
-  border-top: $border-hairline;
+  border-top: $footer-border;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -234,6 +246,6 @@ export default {
   font-size: $fs-micro;
   letter-spacing: $ls-wide;
   text-transform: uppercase;
-  color: $color-gray;
+  color: $footer-text-muted;
 }
 </style>

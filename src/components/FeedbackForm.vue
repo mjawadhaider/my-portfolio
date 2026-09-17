@@ -125,8 +125,13 @@ export default {
 </script>
 
 <style scoped lang="scss">
+// This form only ever renders inside FooterSection.vue's permanently-dark
+// "tray" (see that file's comment) — so, like the footer itself, it uses
+// the fixed $footer-* tokens rather than the theme-reactive $color-*
+// ones. If this component is ever reused somewhere that isn't the fixed-
+// dark footer, it will need its own themed variant instead.
 .feedback-form__lede {
-  color: $color-text-muted;
+  color: $footer-text-muted;
   margin-bottom: $space-5;
 }
 
@@ -139,7 +144,7 @@ export default {
   :deep(.v-field) {
     background: none;
     border-radius: 0;
-    border-bottom: $border-hairline;
+    border-bottom: $footer-border;
     padding-inline: 0;
   }
 
@@ -147,11 +152,11 @@ export default {
   :deep(.v-label) {
     padding-inline: 0;
     font-family: $font-body;
-    color: $color-white;
+    color: $footer-text;
   }
 
   :deep(.v-field--focused) {
-    border-color: $color-accent;
+    border-color: $footer-accent;
   }
 }
 
@@ -160,6 +165,44 @@ export default {
   align-items: center;
   gap: $space-6;
   margin-top: $space-6;
+}
+
+// Overrides InformationSection.vue's global (unscoped) .hero__cta /
+// .hero__cta--primary, which these Cancel/Send buttons reuse — that base
+// styling uses the theme-reactive $color-white/$color-accent, which
+// would go near-invisible (dark-on-dark) once this fixed-dark tray sits
+// in light mode. These scoped rules win via Vue's scoped data-attribute
+// specificity without needing :deep(), since the buttons are this
+// component's own template elements.
+//
+// !important is required, not optional: both this button AND
+// InformationSection's base rule are single-class selectors, and
+// Vuetify's own reset stylesheet includes
+// `button, [type=button], [type=submit], ... { color: inherit }` at the
+// SAME specificity. In this app's build, that reset rule ends up injected
+// after our component styles, so on an equal-specificity tie it wins —
+// meaning the button's color silently falls through to `inherit` (and
+// from there, up the DOM, to whatever ends up on top). That's invisible
+// in dark mode purely by coincidence (the inherited color and the
+// intended one are the same off-white), which is why it went unnoticed
+// until light mode made them diverge. Any custom-colored <button> in
+// this app needs the same !important treatment — see .contact__method
+// in FooterSection.vue, .theme-toggle in AppBar.vue, .dialog-close in
+// ProjectItem.vue, etc.
+.hero__cta {
+  color: $footer-text !important;
+
+  &:hover {
+    border-color: $footer-text;
+  }
+}
+
+.hero__cta--primary {
+  color: $footer-accent !important;
+
+  &::after {
+    background: $footer-accent;
+  }
 }
 
 button:disabled {

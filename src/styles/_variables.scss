@@ -18,28 +18,56 @@
 // cards or shadows.
 
 // ---- Color ----
-$color-bg-darkest:  #17181a; // darkest surfaces (footer, dropdowns)
-$color-bg-base:     #1c1d20; // app shell background — the "ink"
-$color-bg-elevated: #222327; // faint elevation, still reads as flat
-$color-surface:     #26272b; // rarely-used surface (form fields etc.)
-$color-gray:        #8c8f92;
-$color-text-muted:  #9a9d9f; // secondary body text
-$color-white:       #f2f0ec; // warm off-white, not pure white
+// Every token below (except $color-error and the $footer-* set) resolves
+// to a CSS custom property rather than a literal value — the actual
+// light/dark values live in App.vue's global <style> ( :root and
+// :root[data-theme="light"] ), NOT here. This file is auto-injected into
+// every component's <style> block (see vue.config.js), including scoped
+// ones, so it can only ever hold compile-time SCSS aliases — an actual
+// `:root { ... }` rule written here would get Vue's scoped data-attribute
+// appended to it inside any scoped component and silently stop matching
+// anything. Keep that split when adding new tokens: alias here, values in
+// App.vue.
+$color-bg-darkest:  var(--color-bg-darkest); // darkest surfaces (dropdowns, mobile nav overlay)
+$color-bg-base:     var(--color-bg-base); // app shell background — the "ink"
+$color-bg-elevated: var(--color-bg-elevated); // faint elevation, still reads as flat
+$color-surface:     var(--color-surface); // rarely-used surface (form fields etc.)
+$color-gray:        var(--color-gray);
+$color-text-muted:  var(--color-text-muted); // secondary body text
+$color-white:       var(--color-white); // primary reading text/heading color — off-white on dark, warm ink on light
+$color-white-rgb:   var(--color-white-rgb); // same, as an "R, G, B" triplet for rgba() composition
 
-$color-accent:      #cda879; // brand accent — warm, muted, used sparingly
-$color-accent-dark: #b8895a; // deeper variant for hover/pressed states
-$color-ink:         #17181a; // near-black text-on-accent
+$color-accent:       var(--color-accent); // brand accent — warm, muted, used sparingly
+$color-accent-rgb:   var(--color-accent-rgb); // same, as an "R, G, B" triplet for rgba() composition
+$color-accent-dark:  var(--color-accent-dark); // deeper variant for hover/pressed states
+$color-accent-light: var(--color-accent-light); // lighter variant for gradient highlight stops
+$color-ink:          var(--color-ink); // text-on-accent (e.g. ::selection)
 
 // The one deliberate semantic exception to "no new colors": a muted,
 // desaturated warm red reserved solely for error/destructive feedback
 // (toasts, form validation) — never decorative. Kept in the same warm,
 // low-saturation family as $color-accent so it still reads as part of
-// this palette rather than a generic bootstrap-red.
+// this palette rather than a generic bootstrap-red. Left as a literal
+// (not theme-reactive) — an error color that stays constant across
+// themes is a reasonable, common choice, and it keeps the lighten()
+// call below usable (SCSS color functions can't operate on a runtime
+// var() value).
 $color-error:       #c17a68;
 
 // Note: previous iterations used a bright orange (#ec7e1e) for CTAs and
 // gradient buttons. Removed — reads as "developer template", not quiet
 // luxury. $color-accent now carries all emphasis, deliberately sparingly.
+
+// The footer/contact section is a deliberate, permanent exception to the
+// site's theme — see FooterSection.vue's own comment — so its palette is
+// fixed literals, never CSS custom properties, and never flips to light
+// mode. FeedbackForm.vue (only ever rendered inside that footer) reuses
+// these too.
+$footer-bg:          #0d0e0f; // equivalent to the old darken($color-bg-darkest, 4%)
+$footer-text:        #f2f0ec;
+$footer-text-muted:  #8c8f92;
+$footer-accent:      #cda879;
+$footer-border:      1px solid rgba(242, 240, 236, 0.1);
 
 // ---- Typography ----
 // Display: large editorial headlines, hero name, project titles, numerals.
@@ -98,15 +126,20 @@ $radius-pill:   999px;
 $radius-circle: 50%;
 
 // ---- Borders ----
-$border-hairline:       1px solid rgba(242, 240, 236, 0.1);
-$border-hairline-faint: 1px solid rgba(242, 240, 236, 0.06);
-$border-accent:         1px solid rgba(205, 168, 121, 0.4);
+// Composed from the $color-white-rgb / $color-accent-rgb triplets above,
+// so a hairline border is always "a faint version of the current theme's
+// foreground/accent color" and flips correctly with everything else.
+$border-hairline:       1px solid rgba(var(--color-white-rgb), 0.1);
+$border-hairline-faint: 1px solid rgba(var(--color-white-rgb), 0.06);
+$border-accent:         1px solid rgba(var(--color-accent-rgb), 0.4);
 
 // ---- Elevation ----
-// Reserved for true overlays (dialogs, dropdowns) — not for cards.
-$shadow-sm:     0 1px 8px rgba(0, 0, 0, 0.35);
-$shadow-md:     0 8px 24px rgba(0, 0, 0, 0.45);
-$shadow-lg:     0 16px 48px rgba(0, 0, 0, 0.5);
+// Reserved for true overlays (dialogs, dropdowns) — not for cards. Full
+// values (including the light-theme, lower-opacity variants) live in
+// App.vue's :root blocks alongside the other tokens.
+$shadow-sm:     var(--shadow-sm);
+$shadow-md:     var(--shadow-md);
+$shadow-lg:     var(--shadow-lg);
 
 // ---- Gradients ----
 // Sparingly used for a premium sheen: large, soft, low-opacity glows
@@ -115,16 +148,18 @@ $shadow-lg:     0 16px 48px rgba(0, 0, 0, 0.5);
 // the rest are for the handful of signature surfaces called out where
 // they're used (nav progress bar, hero portrait, primary CTA, project
 // visuals, testimonial marks, skeleton shimmer).
-$gradient-page-bg:
-  radial-gradient(ellipse 70% 55% at 14% -8%, rgba(205, 168, 121, 0.12), transparent 60%),
-  radial-gradient(ellipse 55% 45% at 102% 18%, rgba(205, 168, 121, 0.07), transparent 55%),
-  radial-gradient(ellipse 65% 50% at 50% 100%, rgba(205, 168, 121, 0.08), transparent 62%),
-  linear-gradient(180deg, #1c1d20 0%, #17181a 100%);
+//
+// $gradient-page-bg's shape/opacities are deliberately tuned differently
+// per theme (see App.vue), so it's a full var() swap rather than a
+// composition of the smaller tokens below.
+$gradient-page-bg: var(--gradient-page-bg);
 
-$gradient-accent:      linear-gradient(135deg, #e4c79a 0%, $color-accent 55%, $color-accent-dark 100%);
-$gradient-accent-soft: linear-gradient(180deg, rgba(205, 168, 121, 0.16), rgba(205, 168, 121, 0));
-$gradient-glow-accent: radial-gradient(circle, rgba(205, 168, 121, 0.22), transparent 70%);
-$gradient-scrim:       linear-gradient(180deg, rgba(23, 24, 26, 0) 40%, rgba(23, 24, 26, 0.55) 100%);
+// These three compose directly from the color tokens above, so they flip
+// with the theme automatically — no separate light/dark pair needed.
+$gradient-accent:      linear-gradient(135deg, $color-accent-light 0%, $color-accent 55%, $color-accent-dark 100%);
+$gradient-accent-soft: linear-gradient(180deg, rgba(var(--color-accent-rgb), 0.16), rgba(var(--color-accent-rgb), 0));
+$gradient-glow-accent: radial-gradient(circle, rgba(var(--color-accent-rgb), 0.22), transparent 70%);
+$gradient-scrim:       linear-gradient(180deg, rgba(var(--color-bg-darkest-rgb), 0) 40%, rgba(var(--color-bg-darkest-rgb), 0.55) 100%);
 
 // ---- Motion ----
 $ease-out:   cubic-bezier(0.16, 1, 0.3, 1);

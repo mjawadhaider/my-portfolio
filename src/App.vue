@@ -139,6 +139,84 @@ export default {
 </script>
 
 <style lang="scss">
+// ---- Theme tokens ----
+// Dark is the default and exactly matches the site's original (pre-light-
+// mode) look — nothing here changes what an existing visitor sees unless
+// they explicitly toggle to light via the nav's theme button (see
+// src/utils/theme.js, which sets data-theme on <html> and persists the
+// choice). :root here is deliberately NOT inside a scoped component
+// style block — see the comment in _variables.scss for why that matters.
+:root {
+  --color-bg-darkest: #17181a;
+  --color-bg-darkest-rgb: 23, 24, 26;
+  --color-bg-base: #1c1d20;
+  --color-bg-elevated: #222327;
+  --color-surface: #26272b;
+  --color-gray: #8c8f92;
+  --color-text-muted: #9a9d9f;
+  --color-white: #f2f0ec;
+  --color-white-rgb: 242, 240, 236;
+
+  --color-accent: #cda879;
+  --color-accent-rgb: 205, 168, 121;
+  --color-accent-dark: #b8895a;
+  --color-accent-light: #e4c79a;
+  --color-ink: #17181a;
+
+  --shadow-sm: 0 1px 8px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
+
+  --gradient-page-bg:
+    radial-gradient(ellipse 70% 55% at 14% -8%, rgba(205, 168, 121, 0.12), transparent 60%),
+    radial-gradient(ellipse 55% 45% at 102% 18%, rgba(205, 168, 121, 0.07), transparent 55%),
+    radial-gradient(ellipse 65% 50% at 50% 100%, rgba(205, 168, 121, 0.08), transparent 62%),
+    linear-gradient(180deg, #1c1d20 0%, #17181a 100%);
+}
+
+// Warm, quiet-luxury light palette — same editorial identity, inverted:
+// off-white/near-black neutrals instead of near-black/off-white, and a
+// deepened accent gold (the dark-mode #cda879 is ~1.8:1 on white, well
+// under WCAG AA — this variant holds ~5.5-6:1 for the text/link uses of
+// $color-accent across the site, comfortably past AA even for small
+// mono labels like dates and index numbers).
+//
+// A low-alpha gold glow reads as dramatic against dark mode's near-black
+// canvas, but the identical alpha nearly disappears against a light,
+// already-warm base — so the gradient/neutral scale below deliberately
+// isn't a flat inversion of dark mode's opacities: the tonal step between
+// the page background and its "darkest" surface is much bigger here, and
+// the radial glows run at roughly double the opacity, so the same
+// premium depth actually registers on a light canvas instead of reading
+// as flat off-white.
+:root[data-theme='light'] {
+  --color-bg-darkest: #e6dcc4;
+  --color-bg-darkest-rgb: 230, 220, 196;
+  --color-bg-base: #f9f6f0;
+  --color-bg-elevated: #fdfcf9;
+  --color-surface: #ffffff;
+  --color-gray: #65686a;
+  --color-text-muted: #54575a;
+  --color-white: #1c1a17;
+  --color-white-rgb: 28, 26, 23;
+
+  --color-accent: #7a5c32;
+  --color-accent-rgb: 122, 92, 50;
+  --color-accent-dark: #5c4020;
+  --color-accent-light: #a3814f;
+  --color-ink: #fdfbf7;
+
+  --shadow-sm: 0 1px 8px rgba(23, 24, 26, 0.1);
+  --shadow-md: 0 8px 24px rgba(23, 24, 26, 0.14);
+  --shadow-lg: 0 16px 48px rgba(23, 24, 26, 0.18);
+
+  --gradient-page-bg:
+    radial-gradient(ellipse 70% 55% at 14% -8%, rgba(122, 92, 50, 0.22), transparent 60%),
+    radial-gradient(ellipse 55% 45% at 102% 18%, rgba(122, 92, 50, 0.14), transparent 55%),
+    radial-gradient(ellipse 65% 50% at 50% 100%, rgba(122, 92, 50, 0.16), transparent 62%),
+    linear-gradient(180deg, #fdfbf6 0%, #ece2cb 100%);
+}
+
 * {
   font-family: $font-body;
   color: $color-white;
@@ -175,11 +253,11 @@ export default {
   display: block;
   background: linear-gradient(
     100deg,
-    rgba(242, 240, 236, 0.06) 0%,
-    rgba(242, 240, 236, 0.06) 35%,
-    rgba(205, 168, 121, 0.16) 50%,
-    rgba(242, 240, 236, 0.06) 65%,
-    rgba(242, 240, 236, 0.06) 100%
+    rgba(var(--color-white-rgb), 0.06) 0%,
+    rgba(var(--color-white-rgb), 0.06) 35%,
+    rgba(var(--color-accent-rgb), 0.16) 50%,
+    rgba(var(--color-white-rgb), 0.06) 65%,
+    rgba(var(--color-white-rgb), 0.06) 100%
   );
   background-size: 250% 100%;
   animation: skeleton-shimmer 2.4s ease-in-out infinite;
@@ -323,7 +401,7 @@ a:hover {
 .cursor-outline {
   width: 40px;
   height: 40px;
-  border: 2px solid hsla(0, 0%, 100%, 0.5);
+  border: 2px solid rgba(var(--color-white-rgb), 0.5);
   position: absolute;
   transition: width 300ms, height 300ms;
 
@@ -351,17 +429,17 @@ a:hover {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: rgba(var(--color-white-rgb), 0.08);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: rgba(var(--color-white-rgb), 0.25);
   border-radius: 5px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: rgba(var(--color-white-rgb), 0.4);
 }
 </style>

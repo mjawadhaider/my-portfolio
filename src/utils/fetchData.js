@@ -110,18 +110,29 @@ async function fetchSheetRows(sheetName) {
   return parseGvizResponse(text).table.rows;
 }
 
+// Highlights sit in trailing columns (D onward) — as many as a role needs.
+// Leave a cell blank in the sheet to skip it. The first 4 always show; any
+// beyond that are collapsed behind the timeline row's "View more" toggle.
+const PRIMARY_HIGHLIGHT_COUNT = 4;
+const MAX_HIGHLIGHT_COLUMNS = 12;
+
 async function fetchExperience() {
   try {
     const rows = await fetchSheetRows('Experience');
     const experience = [];
     rows.forEach((item, index) => {
       if (index === 0) return;
+      const allHighlights = [];
+      for (let i = 0; i < MAX_HIGHLIGHT_COLUMNS; i += 1) {
+        const value = item.c[String(3 + i)]?.v;
+        if (value) allHighlights.push(value);
+      }
       experience.push({
         company: item.c['0'].v,
         position: item.c['1'].v,
         duration: item.c['2'].v,
-        // Optional, trailing columns — leave blank in the sheet to skip.
-        highlights: [item.c['3']?.v, item.c['4']?.v].filter(Boolean),
+        highlights: allHighlights.slice(0, PRIMARY_HIGHLIGHT_COUNT),
+        moreHighlights: allHighlights.slice(PRIMARY_HIGHLIGHT_COUNT),
       });
     });
     return experience;
@@ -179,8 +190,8 @@ async function fetchProjects() {
       { title: 'associatedWith', default: '' },
       { title: 'description' },
       { title: 'responsibilities' },
-      { title: 'projectLink' },
-      { title: 'githubLink' },
+      { title: 'projectLink', default: '' },
+      { title: 'githubLink', default: '' },
       { title: 'techStack', getValue: (item, i) => item.c[i]?.v.split(',') },
       { title: 'duration' },
       { title: 'icon', default: '' },
